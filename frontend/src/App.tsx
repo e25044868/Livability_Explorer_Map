@@ -8,6 +8,7 @@ import { ListIcon, MapPinIcon, MoonIcon, SunIcon } from './components/Icons'
 import { MapView } from './components/MapView'
 import { PlaceList } from './components/PlaceList'
 import { SearchBar } from './components/SearchBar'
+import { createI18n, I18nProvider, interpolate, type Language } from './i18n'
 import type { CategoryKey, Coordinates, Place, PlaceFilters, QueryMode, SortMode, ViewMode, ViewportBounds } from './types'
 
 const INITIAL_CENTER: Coordinates = { lat: 22.6273, lng: 120.3014 }
@@ -34,6 +35,10 @@ function getInitialTheme(): Theme {
   const stored = localStorage.getItem('livability-map-theme')
   if (stored === 'light' || stored === 'dark') return stored
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function getInitialLanguage(): Language {
+  return localStorage.getItem('livability-map-language') === 'en' ? 'en' : 'zh-TW'
 }
 
 function getFavorites() {
@@ -67,12 +72,17 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [language, setLanguage] = useState<Language>(getInitialLanguage)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     document.documentElement.style.colorScheme = theme
     localStorage.setItem('livability-map-theme', theme)
   }, [theme])
+  useEffect(() => {
+    document.documentElement.lang = language
+    localStorage.setItem('livability-map-language', language)
+  }, [language])
 
   const runRadiusQuery = useCallback(async (nextCenter: Coordinates, nextRadius: number, categories: CategoryKey[], signal?: AbortSignal) => {
     setLoading(true); setError(null)
@@ -151,10 +161,10 @@ export default function App() {
   }
 
   function handleLocate() {
-    if (!navigator.geolocation) { setError('此瀏覽器不支援定位功能'); return }
+    if (!navigator.geolocation) { setError(t('locationUnsupported')); return }
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => handleSetCenter({ lat: coords.latitude, lng: coords.longitude }),
-      () => setError('無法取得目前位置，請確認瀏覽器定位權限'),
+      () => setError(t('locationUnavailable')),
       { enableHighAccuracy: true, timeout: 8000 },
     )
   }
@@ -185,31 +195,36 @@ export default function App() {
   async function shareMap() {
     const url = new URL(window.location.href)
     url.search = new URLSearchParams({ lat: center.lat.toFixed(6), lng: center.lng.toFixed(6), radius: String(radius), categories: activeCategories.join(','), ...(cityFilter ? { city: cityFilter } : {}) }).toString()
-    const payload = { title: '生活機能探索地圖', text: '查看這個生活機能搜尋範圍', url: url.toString() }
+    const payload = { title: t('shareTitle'), text: t('shareText'), url: url.toString() }
     if (navigator.share) await navigator.share(payload).catch(() => undefined)
-    else await navigator.clipboard.writeText(payload.url).then(() => setError('分享連結已複製')).catch(() => setError('無法複製分享連結'))
+    else await navigator.clipboard.writeText(payload.url).then(() => setError(t('linkCopied'))).catch(() => setError(t('copyFailed')))
   }
 
+  const i18n = createI18n(language, setLanguage)
+  const { t, cityLabel } = i18n
+
   return (
+    <I18nProvider value={i18n}>
     <main className="app-shell">
       <header className="topbar">
-        <div className="brand"><span className="brand-mark"><MapPinIcon size={21} /></span><div><strong>生活機能探索地圖</strong><span>KAOHSIUNG LIVABILITY ATLAS</span></div></div>
+        <div className="brand"><span className="brand-mark"><MapPinIcon size={21} /></span><div><strong>{t('appName')}</strong><span>KAOHSIUNG LIVABILITY ATLAS</span></div></div>
         <SearchBar onSelect={handleSearchSelect} />
         <div className="topbar-actions">
           <CitySelector value={cityFilter ?? detectedCity ?? '高雄市'} detectedCity={cityFilter ? null : detectedCity} onChange={handleCityChange} />
-          <button className="share-button" onClick={() => void shareMap()} aria-label="分享目前地圖">分享</button>
-          <nav className="view-switch" aria-label="切換檢視模式">
-            <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}><MapPinIcon size={17}/>地圖</button>
-            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}><ListIcon size={17}/>清單</button>
+          <button className="share-button" onClick={() => void shareMap()} aria-label={t('share')}>{t('share')}</button>
+          <nav className="view-switch" aria-label={t('map')}>
+            <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}><MapPinIcon size={17}/>{t('map')}</button>
+            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}><ListIcon size={17}/>{t('list')}</button>
           </nav>
-          <button className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={`切換為${theme === 'light' ? '深色' : '淺色'}模式`}>{theme === 'light' ? <MoonIcon /> : <SunIcon />}</button>
+          <button className="language-toggle" onClick={() => setLanguage((current) => current === 'zh-TW' ? 'en' : 'zh-TW')} aria-label={language === 'zh-TW' ? 'Switch to English' : '切換為中文'}>{language === 'zh-TW' ? 'EN' : '中文'}</button>
+          <button className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={interpolate(t('switchTheme'), { theme: theme === 'light' ? t('darkTheme') : t('lightTheme') })}>{theme === 'light' ? <MoonIcon /> : <SunIcon />}</button>
         </div>
       </header>
 
       <div className="workspace">
         <AnalysisPanel center={center} radius={radius} queryMode={queryMode} places={places} loading={loading} dataVersion={dataVersion} onRadiusChange={(value) => { setRadius(value); setQueryMode('radius') }} onLocate={handleLocate} activeCategories={activeCategories} onToggleCategory={handleToggleCategory} />
         <section className={`results-area ${viewMode}`}>
-          <div className="results-heading"><div><p className="eyebrow">探索結果 · 點地圖可更換中心</p><h1>{queryMode === 'radius' ? `中心點 ${radius / 1000} 公里內` : queryMode === 'city' ? `${cityFilter}資料` : '目前地圖範圍'}</h1></div><span>{loading ? '更新中' : `${filteredPlaces.length} 筆符合條件`}</span></div>
+          <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
           <FilterBar filters={filters} onChange={setFilters} sortMode={sortMode} onSortChange={setSortMode} intersectionReady={activeCategories.includes('parking') && activeCategories.includes('toilet')} intersectionCount={intersectionCount} />
           <div className="map-view"><MapView center={center} radius={radius} queryMode={queryMode} places={filteredPlaces} selectedPlace={selectedPlace} loading={loading} showSearchArea={showSearchArea} onBoundsChange={handleBoundsChange} onSearchArea={handleSearchArea} onSelect={selectPlace} onSetCenter={handleSetCenter} /></div>
           <div className="list-view"><PlaceList places={filteredPlaces} selectedId={selectedPlace?.public_id ?? null} loading={loading} error={error} onSelect={(place) => { selectPlace(place); if (window.innerWidth < 760) setViewMode('map') }} favoriteIds={favoriteIds} /></div>
@@ -218,7 +233,13 @@ export default function App() {
         </section>
       </div>
     </main>
+    </I18nProvider>
   )
+}
+
+function formatRadius(radius: number, language: Language) {
+  if (language === 'en') return radius < 1000 ? `${radius} m` : `${radius / 1000} km`
+  return radius < 1000 ? `${radius} 公尺` : `${radius / 1000} 公里`
 }
 
 function distanceMeters(a: Place, b: Place) {

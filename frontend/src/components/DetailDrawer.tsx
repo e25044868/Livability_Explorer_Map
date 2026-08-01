@@ -1,4 +1,5 @@
 import type { Place } from '../types'
+import { interpolate, useI18n } from '../i18n'
 
 type Props = {
   place: Place
@@ -25,50 +26,55 @@ const labels: Record<string, string> = {
   vulnerable_friendly: '適合避難弱者', service_villages: '服務村里',
 }
 
+const englishLabels: Record<string, string> = {
+  facility_type: 'Facility type', fee_description: 'Fee details', car_spaces: 'Car spaces', motorcycle_spaces: 'Motorcycle spaces', large_vehicle_spaces: 'Large-vehicle spaces', operator: 'Operator', contract_period_raw: 'Contract period', toilet_type: 'Restroom type', accessible: 'Accessible', grade: 'Restroom grade', facility_category: 'Facility category', administration: 'Administration', diaper: 'Diaper-changing station', location_description: 'AED location', available_hours: 'Hours', place_category: 'Place category', total_spaces: 'Total spaces', available_spaces: 'Available spaces', operation_time: 'Operating hours', ev_spaces: 'EV spaces', accessible_spaces: 'Accessible spaces', parent_child_spaces: 'Family spaces', height_limit: 'Height limit', monthly_pass: 'Monthly pass', live_updated_at: 'Live update', opening_hours: 'Opening hours', gender_friendly: 'Gender friendly', parent_child: 'Family friendly', available_24h: 'Available 24 hours', floor: 'Floor', indoor: 'Indoor', outdoor: 'Outdoor', air_conditioning: 'Air conditioning', restroom: 'Restroom', seats: 'Seats', station_type: 'Facility type', capacity: 'Capacity', disaster_types: 'Disaster types', vulnerable_friendly: 'Vulnerable-person friendly', service_villages: 'Service villages',
+}
+
 export function DetailDrawer({ place, favorite, onClose, onToggleFavorite, dataVersion }: Props) {
+  const { language, t, categoryLabel } = useI18n()
   const properties = Object.entries(place.properties).filter(([key, value]) => labels[key] && value != null)
   return (
-    <aside className="detail-drawer" aria-label={`${place.name}詳細資訊`}>
+    <aside className="detail-drawer" aria-label={interpolate(t('details'), { name: place.name })}>
       <div className="detail-actions">
         <span className={`detail-category ${place.category}`}>{place.category === 'parking' ? 'P' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : '安'}</span>
         <div>
-          <button className={`favorite-button ${favorite ? 'active' : ''}`} onClick={onToggleFavorite} aria-label={favorite ? '取消收藏' : '加入收藏'}>{favorite ? '★' : '☆'}</button>
-          <button className="drawer-close" onClick={onClose} aria-label="關閉詳細資訊">×</button>
+          <button className={`favorite-button ${favorite ? 'active' : ''}`} onClick={onToggleFavorite} aria-label={favorite ? t('removeFavorite') : t('addFavorite')}>{favorite ? '★' : '☆'}</button>
+          <button className="drawer-close" onClick={onClose} aria-label={t('closeDetails')}>×</button>
         </div>
       </div>
-      <p className="eyebrow">{place.category === 'parking' ? '路外停車場' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? '公共廁所' : place.category === 'drinking_water' ? '公共飲水機' : '避難收容處所'}</p>
+      <p className="eyebrow">{categoryLabel(place.category)}</p>
       <h2>{place.name}</h2>
-      <p className="detail-address">{place.address ?? '地址未提供'}</p>
+      <p className="detail-address">{place.address ?? t('addressUnavailable')}</p>
       {place.phone && <a href={`tel:${place.phone}`} className="detail-phone">{place.phone}</a>}
-      {place.latitude != null && place.longitude != null && <div className="navigation-actions" aria-label="導航方式">
-        <a href={navigationUrl(place, 'walking')} target="_blank" rel="noreferrer">步行</a>
-        <a href={navigationUrl(place, 'bicycling')} target="_blank" rel="noreferrer">騎車</a>
-        <a href={navigationUrl(place, 'driving')} target="_blank" rel="noreferrer">開車</a>
+      {place.latitude != null && place.longitude != null && <div className="navigation-actions" aria-label={t('navigation')}>
+        <a href={navigationUrl(place, 'walking')} target="_blank" rel="noreferrer">{t('walking')}</a>
+        <a href={navigationUrl(place, 'bicycling')} target="_blank" rel="noreferrer">{t('cycling')}</a>
+        <a href={navigationUrl(place, 'driving')} target="_blank" rel="noreferrer">{t('driving')}</a>
       </div>}
       <dl className="detail-grid">
-        {properties.map(([key, value]) => <div key={key}><dt>{labels[key]}</dt><dd>{typeof value === 'boolean' ? (value ? '有' : '未標示') : String(value)}</dd></div>)}
+        {properties.map(([key, value]) => <div key={key}><dt>{language === 'en' ? englishLabels[key] : labels[key]}</dt><dd>{typeof value === 'boolean' ? (value ? t('yes') : t('notSpecified')) : String(value)}</dd></div>)}
       </dl>
-      <p className="detail-source">資料來源：{sourceLabel(place)}。資料版本：{formatVersion(dataVersion)}。</p>
-      <a className="report-link" href={`mailto:?subject=${encodeURIComponent(`生活機能探索地圖資料回報：${place.name}`)}&body=${encodeURIComponent(`設施：${place.name}\n地址：${place.address ?? '未提供'}\n問題說明：`)}`}>回報資訊錯誤</a>
+      <p className="detail-source">{interpolate(t('source'), { source: sourceLabel(place, t), version: formatVersion(dataVersion, language) })}</p>
+      <a className="report-link" href={`mailto:?subject=${encodeURIComponent(`${t('appName')}：${place.name}`)}&body=${encodeURIComponent(`${place.name}\n${place.address ?? t('addressUnavailable')}\n`)}`}>{t('reportError')}</a>
     </aside>
   )
 }
 
-function sourceLabel(place: Place) {
-  if (place.category === 'parking') return '地方政府／交通部 TDX'
-  if (place.category === 'aed') return '衛生福利部全國 AED 開放資料'
-  if (place.category === 'toilet') return '環境部全國公廁資料'
-  if (place.category === 'drinking_water') return '環境部 Cool map 涼適點'
-  if (place.category === 'shelter') return '內政部消防署避難收容處所資料'
-  return '政府開放資料'
+function sourceLabel(place: Place, t: (key: never) => string) {
+  if (place.category === 'parking') return t('localGovernment' as never)
+  if (place.category === 'aed') return t('nationalAed' as never)
+  if (place.category === 'toilet') return t('nationalToilet' as never)
+  if (place.category === 'drinking_water') return t('coolMap' as never)
+  if (place.category === 'shelter') return t('nationalShelter' as never)
+  return t('governmentData' as never)
 }
 
 function navigationUrl(place: Place, mode: 'walking' | 'bicycling' | 'driving') {
   return `https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}&travelmode=${mode}`
 }
 
-function formatVersion(value: string) {
-  if (!value || value === 'empty') return '未提供'
+function formatVersion(value: string, language: string) {
+  if (!value || value === 'empty') return language === 'en' ? 'Not provided' : '未提供'
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat('zh-TW', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(language, { dateStyle: 'medium', timeStyle: 'short' }).format(date)
 }

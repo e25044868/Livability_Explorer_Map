@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { geocodeLandmarks, searchPlaces } from '../api'
 import type { Place } from '../types'
+import { useI18n } from '../i18n'
 
 export function SearchBar({ onSelect }: { onSelect: (place: Place) => void }) {
+  const { t } = useI18n()
   const [keyword, setKeyword] = useState('')
   const [results, setResults] = useState<Place[]>([])
   const [open, setOpen] = useState(false)
@@ -44,17 +46,17 @@ export function SearchBar({ onSelect }: { onSelect: (place: Place) => void }) {
         value={keyword}
         onChange={(event) => setKeyword(event.target.value)}
         onFocus={() => results.length && setOpen(true)}
-        placeholder="搜尋地址、地標或設施"
-        aria-label="搜尋地址、地標或設施"
+        placeholder={t('searchPlaceholder')}
+        aria-label={t('searchPlaceholder')}
       />
-      {loading && <span className="search-loading">搜尋中</span>}
+      {loading && <span className="search-loading">{t('searchLoading')}</span>}
       {open && keyword.trim().length >= 2 && (
         <div className="search-results">
           {results.length ? results.map((place) => (
             <button key={place.public_id} onClick={() => { onSelect(place); setKeyword(place.name); setOpen(false) }}>
-              <strong>{place.name}</strong><small>{place.address ?? '地址未提供'}</small>
+              <strong>{place.name}</strong><small>{place.address ?? t('addressUnavailable')}</small>
             </button>
-          )) : <div className="search-empty">找不到具可信座標的設施</div>}
+          )) : <div className="search-empty">{t('noSearchResults')}</div>}
         </div>
       )}
     </div>

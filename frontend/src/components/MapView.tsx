@@ -3,6 +3,7 @@ import L from 'leaflet'
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { SearchAreaIcon } from './Icons'
 import type { Coordinates, Place, QueryMode, ViewportBounds } from '../types'
+import { useI18n } from '../i18n'
 
 type Props = {
   center: Coordinates
@@ -47,6 +48,7 @@ function clusterIcon(count: number) {
 }
 
 export function MapView(props: Props) {
+  const { t, categoryLabel } = useI18n()
   const [zoom, setZoom] = useState(14)
   const mappablePlaces = useMemo(
     () => props.places.filter((place) => place.latitude != null && place.longitude != null),
@@ -80,9 +82,9 @@ export function MapView(props: Props) {
               <div className="map-popup">
                 <span className="popup-label">{categoryLabel(cluster.places[0].category)}</span>
                 <strong>{cluster.places[0].name}</strong>
-                <span>{cluster.places[0].address ?? '地址未提供'}</span>
+                <span>{cluster.places[0].address ?? t('addressUnavailable')}</span>
                 <div>
-                  {cluster.places[0].properties.car_spaces != null && <small>汽車 {cluster.places[0].properties.car_spaces} 格</small>}
+                  {cluster.places[0].properties.car_spaces != null && <small>{t('carSpaces')} {cluster.places[0].properties.car_spaces}</small>}
                   {cluster.places[0].properties.toilet_type && <small>{cluster.places[0].properties.toilet_type}</small>}
                 </div>
               </div>
@@ -94,10 +96,10 @@ export function MapView(props: Props) {
       {props.showSearchArea && (
         <button className="search-area-button" onClick={props.onSearchArea} disabled={props.loading}>
           <SearchAreaIcon size={18} />
-          {props.loading ? '搜尋中…' : '搜尋此區域'}
+          {props.loading ? t('searching') : t('searchThisArea')}
         </button>
       )}
-      <div className="map-result-badge"><strong>{props.places.length}</strong> 個設施</div>
+      <div className="map-result-badge"><strong>{props.places.length}</strong> {t('facilities')}</div>
     </div>
   )
 }
@@ -162,12 +164,4 @@ function placeIcon(place: Place, selected: boolean) {
   if (place.category === 'shelter') return shelterIcon
   if ((place.properties.ev_spaces ?? 0) > 0) return evParkingIcon
   return selected ? selectedParkingIcon : parkingIcon
-}
-
-function categoryLabel(category: Place['category']) {
-  if (category === 'toilet') return '公共廁所'
-  if (category === 'aed') return 'AED'
-  if (category === 'drinking_water') return '公共飲水機'
-  if (category === 'shelter') return '避難收容處所'
-  return '路外停車場'
 }

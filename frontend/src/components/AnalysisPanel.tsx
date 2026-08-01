@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { LocateIcon } from './Icons'
 import type { CategoryKey, Coordinates, Place, QueryMode } from '../types'
+import { useI18n } from '../i18n'
 
 type Props = {
   center: Coordinates
@@ -15,15 +16,15 @@ type Props = {
   onToggleCategory: (category: CategoryKey) => void
 }
 
-const categoryOptions: { key: CategoryKey; label: string; symbol: string; available: boolean }[] = [
-  { key: 'parking', label: '路外停車場', symbol: 'P', available: true },
-  { key: 'toilet', label: '公共廁所', symbol: 'WC', available: true },
-  { key: 'aed', label: 'AED', symbol: 'AED', available: true },
-  { key: 'drinking_water', label: '公共飲水機', symbol: '水', available: true },
-  { key: 'shelter', label: '避難收容處所', symbol: '安', available: true },
-  { key: 'pharmacy', label: '藥局', symbol: '藥', available: false },
-  { key: 'medical', label: '醫療院所', symbol: '醫', available: false },
-  { key: 'motorcycle_charging', label: '機車充電', symbol: '⚡', available: false },
+const categoryOptions: { key: CategoryKey; symbol: string; available: boolean }[] = [
+  { key: 'parking', symbol: 'P', available: true },
+  { key: 'toilet', symbol: 'WC', available: true },
+  { key: 'aed', symbol: 'AED', available: true },
+  { key: 'drinking_water', symbol: '水', available: true },
+  { key: 'shelter', symbol: '安', available: true },
+  { key: 'pharmacy', symbol: '藥', available: false },
+  { key: 'medical', symbol: '醫', available: false },
+  { key: 'motorcycle_charging', symbol: '⚡', available: false },
 ]
 
 const radii = [500, 1000, 3000]
@@ -40,6 +41,7 @@ export function AnalysisPanel({
   activeCategories,
   onToggleCategory,
 }: Props) {
+  const { language, t, categoryLabel } = useI18n()
   const carSpaces = places.reduce((sum, place) => sum + (place.properties.car_spaces ?? 0), 0)
   const motorcycleSpaces = places.reduce(
     (sum, place) => sum + (place.properties.motorcycle_spaces ?? 0),
@@ -47,15 +49,15 @@ export function AnalysisPanel({
   )
 
   return (
-    <aside className="analysis-panel" aria-label="分析條件與摘要">
+    <aside className="analysis-panel" aria-label={t('analysisCenter')}>
       <section className="panel-section location-section">
-        <p className="eyebrow">分析中心</p>
+        <p className="eyebrow">{t('analysisCenter')}</p>
         <div className="location-row">
           <div>
-            <strong>高雄市中心</strong>
+            <strong>{t('kaohsiungCenter')}</strong>
             <span>{center.lat.toFixed(4)}, {center.lng.toFixed(4)}</span>
           </div>
-          <button className="icon-button" onClick={onLocate} title="使用目前位置" aria-label="使用目前位置">
+          <button className="icon-button" onClick={onLocate} title={t('useLocation')} aria-label={t('useLocation')}>
             <LocateIcon />
           </button>
         </div>
@@ -64,12 +66,12 @@ export function AnalysisPanel({
       <section className="panel-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">探索範圍</p>
-            <h2>{queryMode === 'radius' ? '中心點半徑' : queryMode === 'city' ? '縣市瀏覽' : '目前地圖區域'}</h2>
+            <p className="eyebrow">{t('exploreRange')}</p>
+            <h2>{queryMode === 'radius' ? t('centerRadius') : queryMode === 'city' ? t('cityBrowse') : t('mapArea')}</h2>
           </div>
-          {queryMode === 'viewport' && <span className="status-chip">區域搜尋</span>}
+          {queryMode === 'viewport' && <span className="status-chip">{t('areaSearch')}</span>}
         </div>
-        <div className="radius-switch" aria-label="選擇搜尋半徑">
+        <div className="radius-switch" aria-label={t('chooseRadius')}>
           {radii.map((value) => (
             <button
               key={value}
@@ -81,7 +83,7 @@ export function AnalysisPanel({
           ))}
         </div>
         <label className="radius-slider">
-          <span className="sr-only">拖曳調整中心搜尋半徑</span>
+          <span className="sr-only">{t('adjustRadius')}</span>
           <input
             type="range"
             min="500"
@@ -90,14 +92,14 @@ export function AnalysisPanel({
             value={radius}
             style={{ '--radius-progress': `${((radius - 500) / 2500) * 100}%` } as CSSProperties}
             onChange={(event) => onRadiusChange(Number(event.target.value))}
-            aria-valuetext={formatRadius(radius)}
+            aria-valuetext={formatRadius(radius, language)}
           />
-          <span className="radius-slider-scale"><span>500 m</span><strong>{formatRadius(radius)}</strong><span>3 km</span></span>
+          <span className="radius-slider-scale"><span>500 m</span><strong>{formatRadius(radius, language)}</strong><span>3 km</span></span>
         </label>
       </section>
 
       <section className="panel-section category-section">
-        <p className="eyebrow">資料類別</p>
+        <p className="eyebrow">{t('dataCategories')}</p>
         <div className="category-list">
           {categoryOptions.map((option) => {
             const active = activeCategories.includes(option.key)
@@ -110,39 +112,40 @@ export function AnalysisPanel({
                 onClick={() => onToggleCategory(option.key)}
               >
                 <span className="category-icon">{option.symbol}</span>
-                <span><strong>{option.label}</strong><small>{option.available ? '全國政府開放資料' : '待地理編碼'}</small></span>
+                <span><strong>{categoryLabel(option.key)}</strong><small>{option.available ? t('openData') : t('pendingGeocode')}</small></span>
                 <span className="category-count">{option.available ? (loading ? '—' : count) : '—'}</span>
               </button>
             )
           })}
         </div>
-        <div className="coming-soon">無可信座標的類別不會顯示成地圖標記。</div>
+        <div className="coming-soon">{t('noVerifiedCoordinates')}</div>
       </section>
 
       <section className="panel-section summary-section">
         <div className="section-heading">
-          <div><p className="eyebrow">區域摘要</p><h2>停車供給概況</h2></div>
+          <div><p className="eyebrow">{t('areaSummary')}</p><h2>{t('parkingSummary')}</h2></div>
         </div>
         <div className="metrics-grid">
-          <div className="metric primary"><span>設施總數</span><strong>{loading ? '—' : places.length}</strong><small>處</small></div>
-          <div className="metric"><span>汽車格</span><strong>{loading ? '—' : carSpaces.toLocaleString()}</strong><small>格</small></div>
-          <div className="metric"><span>機車格</span><strong>{loading ? '—' : motorcycleSpaces.toLocaleString()}</strong><small>格</small></div>
+          <div className="metric primary"><span>{t('facilities')}</span><strong>{loading ? '—' : places.length}</strong><small>{t('placesUnit')}</small></div>
+          <div className="metric"><span>{t('carSpaces')}</span><strong>{loading ? '—' : carSpaces.toLocaleString()}</strong><small>{t('spacesUnit')}</small></div>
+          <div className="metric"><span>{t('motorcycleSpaces')}</span><strong>{loading ? '—' : motorcycleSpaces.toLocaleString()}</strong><small>{t('spacesUnit')}</small></div>
         </div>
       </section>
 
       <footer className="data-note">
         <span className="live-dot" />
-        <span>{dataVersion === 'empty' ? '等待資料' : `資料更新 ${formatDate(dataVersion)}`}</span>
+        <span>{dataVersion === 'empty' ? t('waitingData') : `${t('dataUpdated')}${formatDate(dataVersion, language)}`}</span>
       </footer>
     </aside>
   )
 }
 
-function formatDate(value: string) {
+function formatDate(value: string, language: string) {
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('zh-TW')
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString(language)
 }
 
-function formatRadius(value: number) {
-  return value < 1000 ? `${value} m` : `${(value / 1000).toFixed(1).replace('.0', '')} km`
+function formatRadius(value: number, language: string) {
+  const label = value < 1000 ? `${value} m` : `${(value / 1000).toFixed(1).replace('.0', '')} km`
+  return language === 'zh-TW' && value >= 1000 ? label.replace('km', '公里') : label
 }

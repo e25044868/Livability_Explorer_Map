@@ -1,5 +1,6 @@
 import { ChevronIcon, ParkingIcon } from './Icons'
 import type { Place } from '../types'
+import { useI18n } from '../i18n'
 
 type Props = {
   places: Place[]
@@ -11,14 +12,15 @@ type Props = {
 }
 
 export function PlaceList({ places, selectedId, loading, error, onSelect, favoriteIds }: Props) {
+  const { t, language } = useI18n()
   if (loading) {
-    return <div className="place-list-state"><span className="loader" />正在查詢停車場…</div>
+    return <div className="place-list-state"><span className="loader" />{t('loadingPlaces')}</div>
   }
   if (error) {
-    return <div className="place-list-state error"><strong>無法取得資料</strong><span>{error}</span></div>
+    return <div className="place-list-state error"><strong>{t('unableToLoad')}</strong><span>{error}</span></div>
   }
   if (!places.length) {
-    return <div className="place-list-state"><ParkingIcon size={34}/><strong>這個範圍目前沒有停車場</strong><span>移動地圖或放大搜尋半徑再試一次。</span></div>
+    return <div className="place-list-state"><ParkingIcon size={34}/><strong>{t('noPlaces')}</strong><span>{t('tryMoveMap')}</span></div>
   }
 
   return (
@@ -33,17 +35,17 @@ export function PlaceList({ places, selectedId, loading, error, onSelect, favori
           <span className="place-card-main">
             <span className="place-title-row">
               <strong>{favoriteIds.has(place.public_id) ? '★ ' : ''}{place.name}</strong>
-              {place.distance_meters != null && <em>{formatDistance(place.distance_meters)}</em>}
+              {place.distance_meters != null && <em>{formatDistance(place.distance_meters, language)}</em>}
             </span>
-            <span className="place-address">{place.address ?? '地址未提供'}</span>
+            <span className="place-address">{place.address ?? t('addressUnavailable')}</span>
             <span className="place-tags">
-              {place.properties.car_spaces != null && <small>汽車 {place.properties.car_spaces} 格</small>}
-              {place.properties.available_spaces != null && <small>剩餘 {place.properties.available_spaces} 格</small>}
-              {(place.properties.ev_spaces ?? 0) > 0 && <small>⚡ 充電 {place.properties.ev_spaces} 格</small>}
-              {place.properties.motorcycle_spaces != null && <small>機車 {place.properties.motorcycle_spaces} 格</small>}
+              {place.properties.car_spaces != null && <small>{t('carSpaces')} {place.properties.car_spaces}</small>}
+              {place.properties.available_spaces != null && <small>{t('availability')} {place.properties.available_spaces}</small>}
+              {(place.properties.ev_spaces ?? 0) > 0 && <small>⚡ {t('evCharging')} {place.properties.ev_spaces}</small>}
+              {place.properties.motorcycle_spaces != null && <small>{t('motorcycleSpaces')} {place.properties.motorcycle_spaces}</small>}
               {place.properties.facility_type && <small>{place.properties.facility_type}</small>}
               {place.properties.toilet_type && <small>{place.properties.toilet_type}</small>}
-              {place.properties.capacity != null && <small>容納 {place.properties.capacity} 人</small>}
+              {place.properties.capacity != null && <small>{place.properties.capacity} {t('placesUnit')}</small>}
               {place.properties.opening_hours && <small>{place.properties.opening_hours}</small>}
             </span>
           </span>
@@ -54,6 +56,6 @@ export function PlaceList({ places, selectedId, loading, error, onSelect, favori
   )
 }
 
-function formatDistance(meters: number) {
-  return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`
+function formatDistance(meters: number, language: string) {
+  return meters < 1000 ? `${Math.round(meters).toLocaleString(language)} m` : `${(meters / 1000).toLocaleString(language, { maximumFractionDigits: 1 })} km`
 }

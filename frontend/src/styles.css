@@ -55,7 +55,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .view-switch button.active { color: var(--green-dark); background: var(--paper); box-shadow: 0 2px 8px var(--shadow); }
 .theme-toggle { width: 38px; height: 38px; display: grid; place-items: center; color: var(--green-dark); background: var(--paper); border: 1px solid var(--line); border-radius: 11px; cursor: pointer; box-shadow: 0 2px 8px var(--shadow); }
 .theme-toggle:hover { background: var(--mint); }
-.share-button { padding: 8px 11px; color: var(--green-dark); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 700; }
+.share-button, .language-toggle { padding: 8px 11px; color: var(--green-dark); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 700; }
+.language-toggle { min-width: 42px; }
 .city-selector { display: flex; align-items: center; gap: 5px; padding: 6px 8px; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); border-radius: 10px; font-size: 9px; }
 .city-selector select { max-width: 82px; color: var(--ink); background: transparent; border: 0; outline: 0; font-size: 11px; font-weight: 600; }
 .city-selector small { display: none; }

@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n'
+
 export const CITY_CENTERS: Record<string, { lat: number; lng: number }> = {
   臺北市: { lat: 25.0375, lng: 121.5637 }, 新北市: { lat: 25.012, lng: 121.465 },
   桃園市: { lat: 24.9937, lng: 121.301 }, 臺中市: { lat: 24.1477, lng: 120.6736 },
@@ -13,13 +15,14 @@ export const CITY_CENTERS: Record<string, { lat: number; lng: number }> = {
 }
 
 export function CitySelector({ value, detectedCity, onChange }: { value: string; detectedCity: string | null; onChange: (city: string) => void }) {
+  const { t, cityLabel } = useI18n()
   return (
     <label className="city-selector">
-      <span>縣市</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label="選擇縣市">
-        {Object.keys(CITY_CENTERS).map((city) => <option key={city}>{city}</option>)}
+      <span>{t('city')}</span>
+      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={t('selectCity')}>
+        {Object.keys(CITY_CENTERS).map((city) => <option key={city} value={city}>{cityLabel(city)}</option>)}
       </select>
-      {detectedCity && <small>定位：{detectedCity}</small>}
+      {detectedCity && <small>{t('detected')}{cityLabel(detectedCity)}</small>}
     </label>
   )
 }
