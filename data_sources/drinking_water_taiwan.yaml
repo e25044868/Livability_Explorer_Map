@@ -1,0 +1,17 @@
+dataset_key: moenv_national_drinking_water
+dataset_id: GIS_P_82
+name: Cool map 涼適點－飲水機
+category: drinking_water
+source_agency: 環境部氣候變遷署
+metadata_url: https://data.gov.tw/dataset/177893
+download:
+  url: https://data.moenv.gov.tw/api/v2/gis_p_82?api_key=b7df779e-71a6-4148-8379-5afbd441d803&format=JSON&limit=1000
+  allowed_hosts: [data.moenv.gov.tw]
+  format: json
+  encoding: utf-8
+  timeout_seconds: 30
+  max_bytes: 50000000
+quality_gates:
+  minimum_records: 10
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.8

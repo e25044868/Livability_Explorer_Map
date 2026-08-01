@@ -1,0 +1,19 @@
+dataset_key: moenv_national_toilets
+dataset_id: "30794"
+name: 全國公廁建檔資料
+category: toilet
+source_agency: 環境部環境管理署
+metadata_url: https://data.gov.tw/dataset/30794
+download:
+  url: https://data.moenv.gov.tw/api/v2/fac_p_07?api_key=4c89a32a-a214-461b-bf29-30ff32a61a8a&format=JSON&limit=1000&sort=ImportDate%20desc
+  allowed_hosts:
+    - data.moenv.gov.tw
+  format: json
+  encoding: utf-8
+  timeout_seconds: 60
+  max_bytes: 50000000
+payload_path: data
+quality_gates:
+  minimum_records: 5000
+  maximum_invalid_coordinate_ratio: 0.2
+  maximum_record_count_change_ratio: 0.5

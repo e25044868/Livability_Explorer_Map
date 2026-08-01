@@ -1,0 +1,17 @@
+dataset_key: nfa_national_shelters
+dataset_id: '73242'
+name: 避難收容處所點位檔
+category: shelter
+source_agency: 內政部消防署
+metadata_url: https://data.gov.tw/dataset/73242
+download:
+  url: https://opdadm.moi.gov.tw/api/v1/no-auth/resource/api/dataset/ED6CF735-6C03-4573-A882-72C1BEC799CB/resource/54550E2F-4567-4C8F-BD2E-E54E9D0386B8/download
+  allowed_hosts: [opdadm.moi.gov.tw]
+  format: csv
+  encoding: utf-8-sig
+  timeout_seconds: 60
+  max_bytes: 10000000
+quality_gates:
+  minimum_records: 100
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.8

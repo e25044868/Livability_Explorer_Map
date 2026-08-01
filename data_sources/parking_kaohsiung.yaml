@@ -1,0 +1,42 @@
+dataset_key: kcg_public_offstreet_parking
+dataset_id: "46944"
+name: 高雄市公有路外停車場一覽表
+category: parking
+source_agency: 高雄市政府交通局
+metadata_url: https://data.gov.tw/dataset/46944
+download:
+  url: https://openapi.kcg.gov.tw/Api/Service/Get/30c58c88-4f53-45a0-8393-e655feaaa65b
+  allowed_hosts:
+    - openapi.kcg.gov.tw
+  format: json
+  encoding: utf-8
+  timeout_seconds: 30
+  max_bytes: 10485760
+payload_path: data
+coordinate_system: EPSG:4326
+update_frequency: 不定期更新
+field_mapping:
+  name: 場名
+  subcategory: 型式
+  address: 位置
+  district: 行政區
+  latitude: 緯度
+  longitude: 經度
+  phone: 聯絡電話
+properties_mapping:
+  fee_description: 收費標準
+  large_vehicle_spaces: 大車
+  car_spaces: 小車
+  motorcycle_spaces: 機車
+  operator: 管理業者
+  contract_period_raw: 履約起迄
+cleaning_rules:
+  - inherit_parent_when_name_is_dash
+  - parse_zone_prefix_from_address
+  - preserve_dash_as_null_not_zero
+  - validate_wgs84_in_taiwan_range
+quality_gates:
+  minimum_records: 50
+  maximum_invalid_coordinate_ratio: 0.02
+  maximum_record_count_change_ratio: 0.5
+

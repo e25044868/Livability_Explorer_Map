@@ -1,0 +1,19 @@
+dataset_key: mohw_national_aed
+dataset_id: "12063"
+name: 全國公共場所 AED 位置資訊
+category: aed
+source_agency: 衛生福利部醫事司
+metadata_url: https://data.gov.tw/dataset/12063
+download:
+  url: https://tw-aed.mohw.gov.tw/openData?t=csv
+  allowed_hosts:
+    - tw-aed.mohw.gov.tw
+  format: csv
+  encoding: utf-8-sig
+  timeout_seconds: 60
+  max_bytes: 50000000
+payload_path: data
+quality_gates:
+  minimum_records: 5000
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.5
