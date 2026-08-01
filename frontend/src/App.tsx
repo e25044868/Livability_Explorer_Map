@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { detectAdministrativeArea, fetchPlacesByCity, fetchPlacesByRadius, fetchPlacesByViewport } from './api'
 import { AnalysisPanel } from './components/AnalysisPanel'
+import { AboutDialog } from './components/AboutDialog'
 import { DetailDrawer } from './components/DetailDrawer'
 import { CITY_CENTERS, CitySelector } from './components/CitySelector'
 import { FilterBar } from './components/FilterBar'
@@ -73,6 +74,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
   const [language, setLanguage] = useState<Language>(getInitialLanguage)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -221,6 +223,7 @@ export default function App() {
             <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}><MapPinIcon size={17}/>{t('map')}</button>
             <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}><ListIcon size={17}/>{t('list')}</button>
           </nav>
+          <button className="about-button" onClick={() => setAboutOpen(true)}>{t('about')}</button>
           <button className="language-toggle" onClick={() => setLanguage((current) => current === 'zh-TW' ? 'en' : 'zh-TW')} aria-label={language === 'zh-TW' ? 'Switch to English' : '切換為中文'}>{language === 'zh-TW' ? 'EN' : '中文'}</button>
           <button className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={interpolate(t('switchTheme'), { theme: theme === 'light' ? t('darkTheme') : t('lightTheme') })}>{theme === 'light' ? <MoonIcon /> : <SunIcon />}</button>
         </div>
@@ -235,6 +238,7 @@ export default function App() {
           <div className="list-view"><PlaceList places={filteredPlaces} selectedId={selectedPlace?.public_id ?? null} loading={loading} error={error} onSelect={(place) => { selectPlace(place); if (window.innerWidth < 760) setViewMode('map') }} favoriteIds={favoriteIds} /></div>
           {selectedPlace && <DetailDrawer place={selectedPlace} favorite={favoriteIds.has(selectedPlace.public_id)} dataVersion={dataVersion} onClose={() => setSelectedPlace(null)} onToggleFavorite={() => toggleFavorite(selectedPlace.public_id)} />}
           {error && viewMode === 'map' && <div className="map-error">{error}</div>}
+          {aboutOpen && <AboutDialog onClose={() => setAboutOpen(false)} />}
         </section>
       </div>
     </main>

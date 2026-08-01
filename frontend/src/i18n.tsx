@@ -14,7 +14,7 @@ type I18nValue = {
 
 const messages = {
   'zh-TW': {
-    appName: '生活機能探索地圖', search: '搜尋', map: '地圖', list: '清單', share: '分享',
+    appName: '生活機能探索地圖', search: '搜尋', map: '地圖', list: '清單', share: '分享', about: '關於',
     city: '縣市', selectCity: '選擇縣市', detected: '定位：', analysisCenter: '分析中心',
     kaohsiungCenter: '高雄市中心', useLocation: '使用目前位置', exploreRange: '探索範圍',
     centerRadius: '中心點半徑', cityBrowse: '縣市瀏覽', mapArea: '目前地圖區域', areaSearch: '區域搜尋',
@@ -40,10 +40,15 @@ const messages = {
     source: '資料來源：{source}。資料版本：{version}。', reportError: '回報資訊錯誤',
     localGovernment: '地方政府／交通部 TDX', nationalAed: '衛生福利部全國 AED 開放資料', nationalToilet: '環境部全國公廁資料',
     coolMap: '環境部 Cool map 涼適點', nationalShelter: '內政部消防署避難收容處所資料', governmentData: '政府開放資料',
+    aboutEyebrow: 'ABOUT THE MAP', aboutTitle: '關於生活機能探索地圖', closeAbout: '關閉平台說明',
+    aboutIntro: '本平台將具備可信座標的公共設施整合到同一張地圖，協助你依地點、距離與需求快速探索生活機能。',
+    officialSources: '官方資料來源', parkingSource: '交通部 TDX：路外停車場資料', toiletSource: '環境部環境管理署：全國公廁建檔資料',
+    aedSource: '衛生福利部醫事司：全國公共場所 AED 位置資訊', waterSource: '環境部氣候變遷署：Cool map 涼適點－飲水機',
+    shelterSource: '內政部消防署：避難收容處所點位檔', aboutNote: '資料會依各官方來源的公開更新情況整理發布；平台僅呈現具可信座標的項目，實際服務狀態請以主管機關公告為準。',
     parking: '路外停車場', toilet: '公共廁所', aed: 'AED', drinking_water: '公共飲水機', shelter: '避難收容處所', pharmacy: '藥局', medical: '醫療院所', motorcycle_charging: '機車充電',
   },
   en: {
-    appName: 'Livability Explorer Map', search: 'Search', map: 'Map', list: 'List', share: 'Share',
+    appName: 'Livability Explorer Map', search: 'Search', map: 'Map', list: 'List', share: 'Share', about: 'About',
     city: 'City', selectCity: 'Select city', detected: 'Located: ', analysisCenter: 'ANALYSIS CENTER',
     kaohsiungCenter: 'Kaohsiung City Center', useLocation: 'Use current location', exploreRange: 'SEARCH RANGE',
     centerRadius: 'Radius from center', cityBrowse: 'Browse by city', mapArea: 'Current map area', areaSearch: 'Area search',
@@ -69,6 +74,11 @@ const messages = {
     source: 'Source: {source}. Data version: {version}.', reportError: 'Report data issue',
     localGovernment: 'Local government / MOTC TDX', nationalAed: 'National AED open data', nationalToilet: 'National public restroom data',
     coolMap: 'MOENV Cool Map', nationalShelter: 'National Fire Agency shelter data', governmentData: 'Government open data',
+    aboutEyebrow: 'ABOUT THE MAP', aboutTitle: 'About Livability Explorer Map', closeAbout: 'Close about panel',
+    aboutIntro: 'This map brings public facilities with verified coordinates into one place, helping you explore nearby everyday services by location, distance, and needs.',
+    officialSources: 'Official data sources', parkingSource: 'MOTC TDX: Off-street parking data', toiletSource: 'MOENV Environmental Management Administration: National public restroom registry',
+    aedSource: 'MOHW Department of Medical Affairs: National public AED locations', waterSource: 'MOENV Climate Change Administration: Cool Map drinking water points',
+    shelterSource: 'National Fire Agency: Emergency shelter locations', aboutNote: 'Data is organised according to each official source’s public updates. Only records with verified coordinates are plotted; always confirm service status with the responsible authority.',
     parking: 'Off-street parking', toilet: 'Public restroom', aed: 'AED', drinking_water: 'Drinking water', shelter: 'Emergency shelter', pharmacy: 'Pharmacy', medical: 'Medical facility', motorcycle_charging: 'Motorcycle charging',
   },
 } as const
