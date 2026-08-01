@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { detectAdministrativeArea, fetchPlacesByCity, fetchPlacesByRadius, fetchPlacesByViewport } from './api'
+import { detectAdministrativeArea, fetchDistricts, fetchPlacesByCity, fetchPlacesByDistrict, fetchPlacesByRadius, fetchPlacesByViewport } from './api'
 import { AnalysisPanel } from './components/AnalysisPanel'
 import { AboutDialog } from './components/AboutDialog'
 import { DetailDrawer } from './components/DetailDrawer'
-import { CITY_CENTERS, CitySelector } from './components/CitySelector'
+import { CITY_CENTERS } from './components/CitySelector'
 import { FilterBar } from './components/FilterBar'
 import { ListIcon, MapPinIcon, MoonIcon, SunIcon } from './components/Icons'
 import { MapView } from './components/MapView'
 import { PlaceList } from './components/PlaceList'
-import { SearchBar } from './components/SearchBar'
 import { createI18n, I18nProvider, interpolate, type Language } from './i18n'
 import type { CategoryKey, Coordinates, Place, PlaceFilters, QueryMode, SortMode, ViewMode, ViewportBounds } from './types'
 
@@ -59,6 +58,8 @@ export default function App() {
   const [places, setPlaces] = useState<Place[]>([])
   const [activeCategories, setActiveCategories] = useState<CategoryKey[]>(initial.categories)
   const [cityFilter, setCityFilter] = useState<string | null>(initial.city)
+  const [districtFilter, setDistrictFilter] = useState<string | null>(null)
+  const [districts, setDistricts] = useState<string[]>([])
   const [detectedCity, setDetectedCity] = useState<string | null>('高雄市')
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(getFavorites)
@@ -108,17 +109,44 @@ export default function App() {
     } finally { if (!signal?.aborted) setLoading(false) }
   }, [])
 
+  const runDistrictQuery = useCallback(async (city: string, district: string, categories: CategoryKey[], signal?: AbortSignal) => {
+    setLoading(true); setError(null)
+    try {
+      const response = await fetchPlacesByDistrict(city, district, categories, signal)
+      setPlaces(response.items); setDataVersion(response.data_version); setQueryMode('city'); setShowSearchArea(false)
+      const coordinates = response.items.filter((item) => item.latitude != null && item.longitude != null)
+      if (coordinates.length) {
+        const nextCenter = {
+          lat: coordinates.reduce((sum, item) => sum + item.latitude!, 0) / coordinates.length,
+          lng: coordinates.reduce((sum, item) => sum + item.longitude!, 0) / coordinates.length,
+        }
+        setCenter((current) => Math.abs(current.lat - nextCenter.lat) > .00001 || Math.abs(current.lng - nextCenter.lng) > .00001 ? nextCenter : current)
+      }
+    } catch (reason) {
+      if ((reason as Error).name !== 'AbortError') setError((reason as Error).message)
+    } finally { if (!signal?.aborted) setLoading(false) }
+  }, [])
+
   useEffect(() => {
     const controller = new AbortController()
     const query = () => {
-      if (cityFilter) void runCityQuery(cityFilter, activeCategories, controller.signal)
+      if (cityFilter && districtFilter) void runDistrictQuery(cityFilter, districtFilter, activeCategories, controller.signal)
+      else if (cityFilter) void runCityQuery(cityFilter, activeCategories, controller.signal)
       else void runRadiusQuery(center, radius, activeCategories, controller.signal)
     }
     // A slider can emit dozens of values in one gesture. Wait briefly so only
     // the settled radius starts a remote query; the previous request is aborted.
     const timer = window.setTimeout(query, cityFilter ? 0 : 180)
     return () => { window.clearTimeout(timer); controller.abort() }
-  }, [center, radius, activeCategories, cityFilter, runCityQuery, runRadiusQuery])
+  }, [center, radius, activeCategories, cityFilter, districtFilter, runCityQuery, runDistrictQuery, runRadiusQuery])
+
+  useEffect(() => {
+    const city = cityFilter ?? detectedCity
+    if (!city) return
+    const controller = new AbortController()
+    void fetchDistricts(city, controller.signal).then(setDistricts).catch(() => setDistricts([]))
+    return () => controller.abort()
+  }, [cityFilter, detectedCity])
 
   const filteredPlaces = useMemo(() => places.filter((place) => {
     if (filters.favoritesOnly && !favoriteIds.has(place.public_id)) return false
@@ -154,13 +182,13 @@ export default function App() {
   }
 
   function handleSetCenter(nextCenter: Coordinates) {
-    setCityFilter(null); setCenter(nextCenter); setQueryMode('radius'); setSelectedPlace(null)
+    setCityFilter(null); setDistrictFilter(null); setCenter(nextCenter); setQueryMode('radius'); setSelectedPlace(null)
     void detectAdministrativeArea(nextCenter).then(({ city }) => setDetectedCity(city)).catch(() => undefined)
   }
 
   function handleSearchSelect(place: Place) {
     if (place.latitude == null || place.longitude == null) return
-    setCityFilter(null); setCenter({ lat: place.latitude, lng: place.longitude }); setSelectedPlace(place); setQueryMode('radius')
+    setCityFilter(null); setDistrictFilter(null); setCenter({ lat: place.latitude, lng: place.longitude }); setSelectedPlace(place); setQueryMode('radius')
   }
 
   function handleToggleCategory(category: CategoryKey) {
@@ -177,7 +205,11 @@ export default function App() {
   }
 
   function handleCityChange(city: string) {
-    setCityFilter(city); setDetectedCity(city); setCenter(CITY_CENTERS[city]); setSelectedPlace(null)
+    setCityFilter(city); setDistrictFilter(null); setDetectedCity(city); setCenter(CITY_CENTERS[city]); setSelectedPlace(null)
+  }
+
+  function handleDistrictChange(district: string | null) {
+    setDistrictFilter(district); setSelectedPlace(null)
   }
 
   function toggleFavorite(publicId: string) {
@@ -215,9 +247,7 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand"><span className="brand-mark"><MapPinIcon size={21} /></span><div><strong>{t('appName')}</strong><span>KAOHSIUNG LIVABILITY ATLAS</span></div></div>
-        <SearchBar onSelect={handleSearchSelect} />
         <div className="topbar-actions">
-          <CitySelector value={cityFilter ?? detectedCity ?? '高雄市'} detectedCity={cityFilter ? null : detectedCity} onChange={handleCityChange} />
           <button className="share-button" onClick={() => void shareMap()} aria-label={t('share')}>{t('share')}</button>
           <nav className="view-switch" aria-label={t('map')}>
             <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}><MapPinIcon size={17}/>{t('map')}</button>
@@ -230,7 +260,7 @@ export default function App() {
       </header>
 
       <div className="workspace">
-        <AnalysisPanel center={center} radius={radius} queryMode={queryMode} places={places} loading={loading} dataVersion={dataVersion} onRadiusChange={(value) => { setRadius(value); setQueryMode('radius') }} onLocate={handleLocate} activeCategories={activeCategories} onToggleCategory={handleToggleCategory} />
+        <AnalysisPanel center={center} radius={radius} queryMode={queryMode} places={places} loading={loading} dataVersion={dataVersion} onRadiusChange={(value) => { setRadius(value); setQueryMode('radius') }} onLocate={handleLocate} activeCategories={activeCategories} onToggleCategory={handleToggleCategory} city={cityFilter ?? detectedCity ?? '高雄市'} district={districtFilter} districts={districts} detectedCity={cityFilter ? null : detectedCity} onCityChange={handleCityChange} onDistrictChange={handleDistrictChange} onSearchSelect={handleSearchSelect} />
         <section className={`results-area ${viewMode}`}>
           <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
           <FilterBar filters={filters} onChange={setFilters} sortMode={sortMode} onSortChange={setSortMode} intersectionReady={activeCategories.includes('parking') && activeCategories.includes('toilet')} intersectionCount={intersectionCount} />

@@ -15,7 +15,7 @@ type I18nValue = {
 const messages = {
   'zh-TW': {
     appName: '生活機能探索地圖', search: '搜尋', map: '地圖', list: '清單', share: '分享', about: '關於',
-    city: '縣市', selectCity: '選擇縣市', detected: '定位：', analysisCenter: '分析中心',
+    city: '縣市', district: '行政區', allDistricts: '所有行政區', selectCity: '選擇縣市', selectDistrict: '選擇行政區', detected: '定位：', analysisCenter: '分析中心', searchAndBrowse: '搜尋與區域瀏覽',
     kaohsiungCenter: '高雄市中心', useLocation: '使用目前位置', exploreRange: '探索範圍',
     centerRadius: '中心點半徑', cityBrowse: '縣市瀏覽', mapArea: '目前地圖區域', areaSearch: '區域搜尋',
     chooseRadius: '選擇搜尋半徑', adjustRadius: '拖曳調整中心搜尋半徑', dataCategories: '資料類別',
@@ -49,7 +49,7 @@ const messages = {
   },
   en: {
     appName: 'Livability Explorer Map', search: 'Search', map: 'Map', list: 'List', share: 'Share', about: 'About',
-    city: 'City', selectCity: 'Select city', detected: 'Located: ', analysisCenter: 'ANALYSIS CENTER',
+    city: 'City', district: 'District', allDistricts: 'All districts', selectCity: 'Select city', selectDistrict: 'Select district', detected: 'Located: ', analysisCenter: 'ANALYSIS CENTER', searchAndBrowse: 'SEARCH & AREA BROWSE',
     kaohsiungCenter: 'Kaohsiung City Center', useLocation: 'Use current location', exploreRange: 'SEARCH RANGE',
     centerRadius: 'Radius from center', cityBrowse: 'Browse by city', mapArea: 'Current map area', areaSearch: 'Area search',
     chooseRadius: 'Choose search radius', adjustRadius: 'Drag to adjust the search radius', dataCategories: 'DATA CATEGORIES',

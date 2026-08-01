@@ -24,6 +24,13 @@ def test_categories_use_motorcycle_charging_label() -> None:
     assert "charging_station" not in labels
 
 
+def test_districts_returns_an_empty_list_when_no_data_is_available() -> None:
+    client = TestClient(create_app())
+    response = client.get("/api/districts", params={"city": "高雄市"})
+    assert response.status_code == 200
+    assert response.json() == []
+
+
 def test_search_rejects_one_character_keyword() -> None:
     client = TestClient(create_app())
     response = client.get("/api/search", params={"keyword": "醫"})

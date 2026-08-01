@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react'
 import { LocateIcon } from './Icons'
+import { CitySelector } from './CitySelector'
+import { SearchBar } from './SearchBar'
 import type { CategoryKey, Coordinates, Place, QueryMode } from '../types'
 import { useI18n } from '../i18n'
 
@@ -14,6 +16,13 @@ type Props = {
   onLocate: () => void
   activeCategories: CategoryKey[]
   onToggleCategory: (category: CategoryKey) => void
+  city: string
+  district: string | null
+  districts: string[]
+  detectedCity: string | null
+  onCityChange: (city: string) => void
+  onDistrictChange: (district: string | null) => void
+  onSearchSelect: (place: Place) => void
 }
 
 const categoryOptions: { key: CategoryKey; symbol: string; available: boolean }[] = [
@@ -40,6 +49,13 @@ export function AnalysisPanel({
   onLocate,
   activeCategories,
   onToggleCategory,
+  city,
+  district,
+  districts,
+  detectedCity,
+  onCityChange,
+  onDistrictChange,
+  onSearchSelect,
 }: Props) {
   const { language, t, categoryLabel } = useI18n()
   const carSpaces = places.reduce((sum, place) => sum + (place.properties.car_spaces ?? 0), 0)
@@ -61,6 +77,12 @@ export function AnalysisPanel({
             <LocateIcon />
           </button>
         </div>
+      </section>
+
+      <section className="panel-section search-section">
+        <p className="eyebrow">{t('searchAndBrowse')}</p>
+        <div className="panel-search"><SearchBar onSelect={onSearchSelect} /></div>
+        <CitySelector value={city} district={district} districts={districts} detectedCity={detectedCity} onChange={onCityChange} onDistrictChange={onDistrictChange} />
       </section>
 
       <section className="panel-section">

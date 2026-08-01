@@ -60,6 +60,17 @@ export function fetchPlacesByCity(city: string, categories: CategoryKey[], signa
   return getPlaces(params, signal)
 }
 
+export function fetchPlacesByDistrict(city: string, district: string, categories: CategoryKey[], signal?: AbortSignal) {
+  const params = new URLSearchParams({ city, district, categories: categories.join(','), limit: '500' })
+  return getPlaces(params, signal)
+}
+
+export async function fetchDistricts(city: string, signal?: AbortSignal) {
+  const response = await fetch(`${API_BASE}/api/districts?city=${encodeURIComponent(city)}`, { signal })
+  if (!response.ok) return []
+  return (await response.json()) as string[]
+}
+
 export function searchPlaces(keyword: string, signal?: AbortSignal) {
   const params = new URLSearchParams({ keyword, limit: '30' })
   const response = fetch(`${API_BASE}/api/search?${params}`, { signal })

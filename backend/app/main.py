@@ -108,6 +108,13 @@ def create_app(
             for category, label in CATEGORY_LABELS.items()
         ]
 
+    @app.get("/api/districts", response_model=list[str])
+    async def districts_endpoint(
+        city: str = Query(min_length=2, max_length=20),
+        repo: PlaceReadRepository = Depends(get_repository),
+    ) -> list[str]:
+        return await repo.list_districts(city)
+
     @app.get("/api/places", response_model=PlaceListResponse)
     async def places_endpoint(
         lat: float | None = None,

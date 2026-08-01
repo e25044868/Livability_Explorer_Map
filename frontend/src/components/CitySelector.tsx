@@ -14,15 +14,33 @@ export const CITY_CENTERS: Record<string, { lat: number; lng: number }> = {
   金門縣: { lat: 24.4321, lng: 118.3171 }, 連江縣: { lat: 26.1604, lng: 119.9517 },
 }
 
-export function CitySelector({ value, detectedCity, onChange }: { value: string; detectedCity: string | null; onChange: (city: string) => void }) {
+export function CitySelector({
+  value, district, districts, detectedCity, onChange, onDistrictChange,
+}: {
+  value: string
+  district: string | null
+  districts: string[]
+  detectedCity: string | null
+  onChange: (city: string) => void
+  onDistrictChange: (district: string | null) => void
+}) {
   const { t, cityLabel } = useI18n()
   return (
-    <label className="city-selector">
-      <span>{t('city')}</span>
-      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={t('selectCity')}>
-        {Object.keys(CITY_CENTERS).map((city) => <option key={city} value={city}>{cityLabel(city)}</option>)}
-      </select>
-      {detectedCity && <small>{t('detected')}{cityLabel(detectedCity)}</small>}
-    </label>
+    <div className="area-selectors">
+      <label className="city-selector">
+        <span>{t('city')}</span>
+        <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={t('selectCity')}>
+          {Object.keys(CITY_CENTERS).map((city) => <option key={city} value={city}>{cityLabel(city)}</option>)}
+        </select>
+      </label>
+      <label className="city-selector district-selector">
+        <span>{t('district')}</span>
+        <select value={district ?? ''} onChange={(event) => onDistrictChange(event.target.value || null)} aria-label={t('selectDistrict')}>
+          <option value="">{t('allDistricts')}</option>
+          {districts.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+      </label>
+      {detectedCity && <small className="detected-city">{t('detected')}{cityLabel(detectedCity)}</small>}
+    </div>
   )
 }

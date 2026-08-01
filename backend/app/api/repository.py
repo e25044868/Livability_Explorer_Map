@@ -15,6 +15,8 @@ class PlaceReadRepository(Protocol):
         self, lat: float, lng: float, radius: int
     ) -> tuple[dict[str, int], str]: ...
 
+    async def list_districts(self, city: str) -> list[str]: ...
+
 
 class EmptyPlaceReadRepository:
     async def list_places(self, query: PlaceQuery) -> tuple[list[PlaceSummaryResponse], str]:
@@ -27,3 +29,6 @@ class EmptyPlaceReadRepository:
         self, lat: float, lng: float, radius: int
     ) -> tuple[dict[str, int], str]:
         return {}, "empty"
+
+    async def list_districts(self, city: str) -> list[str]:
+        return []

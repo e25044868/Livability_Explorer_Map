@@ -171,6 +171,19 @@ class PostgresPlaceReadRepository:
         version = max((row["data_version"].isoformat() for row in rows), default="empty")
         return summary, version
 
+    async def list_districts(self, city: str) -> list[str]:
+        statement = text(
+            """
+            SELECT DISTINCT district
+            FROM places
+            WHERE is_active = true AND city = :city AND district IS NOT NULL AND district <> ''
+            ORDER BY district
+            """
+        )
+        async with self.sessions() as session:
+            rows = (await session.execute(statement, {"city": city})).scalars().all()
+        return [str(district) for district in rows]
+
     @staticmethod
     def _to_summary(row: dict[str, Any]) -> PlaceSummaryResponse:
         return PlaceSummaryResponse(
