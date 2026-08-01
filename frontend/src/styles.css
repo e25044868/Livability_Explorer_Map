@@ -198,6 +198,9 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 :root[data-theme='dark'] .leaflet-control-attribution,
 :root[data-theme='dark'] .leaflet-popup-content-wrapper,
 :root[data-theme='dark'] .leaflet-popup-tip { color: var(--ink); background: var(--paper); }
+:root[data-theme='dark'] select { color-scheme: dark; }
+:root[data-theme='dark'] select option { color: var(--ink); background: var(--surface-soft); }
+:root[data-theme='dark'] select option:checked { color: #effcf7; background: #28574e; }
 :root[data-theme='dark'] .map-popup small,
 :root[data-theme='dark'] .place-tags small { color: #bdccc7; background: #2a3935; }
 :root[data-theme='dark'] .parking-marker { border-color: #dce8e3; }
