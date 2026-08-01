@@ -2,7 +2,7 @@ services:
   - type: web
     runtime: static
     name: taiwan-livability-explorer-map
-    buildCommand: cd frontend && corepack enable && pnpm install --frozen-lockfile && pnpm run build
+    buildCommand: cd frontend && npx --yes pnpm@9 install --frozen-lockfile && npx --yes pnpm@9 run build
     staticPublishPath: frontend/dist
     autoDeployTrigger: commit
     envVars:
