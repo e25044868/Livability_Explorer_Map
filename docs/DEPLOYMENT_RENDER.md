@@ -46,6 +46,8 @@ where schemaname = 'public'
 ```
 
 此 migration 會啟用 `postgis`、`pg_trgm`、`pgcrypto`，並建立本專案需要的資料表與索引。
+它同時會啟用每張新表的 RLS，且不建立任何 Supabase Data API 的公開 policy；資料只能
+透過 Render FastAPI 使用的直接資料庫連線存取。
 
 ## 2. 以 Blueprint 建立 Render services
 

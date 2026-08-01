@@ -109,4 +109,15 @@ CREATE INDEX places_address_trgm_idx ON places USING gin (normalized_address gin
 CREATE INDEX place_relations_from_idx ON place_relations (from_place_id, relation_type);
 CREATE INDEX place_relations_to_idx ON place_relations (to_place_id, relation_type);
 
+-- These tables are accessed only through the trusted FastAPI service's direct
+-- database connection. Do not expose them through Supabase's generated Data API.
+ALTER TABLE data_sources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE import_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE raw_imports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE places ENABLE ROW LEVEL SECURITY;
+ALTER TABLE place_relations ENABLE ROW LEVEL SECURITY;
+
+REVOKE ALL ON TABLE data_sources, import_runs, raw_imports, places, place_relations
+FROM anon, authenticated, service_role;
+
 COMMIT;
