@@ -108,9 +108,14 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController()
-    if (cityFilter) void runCityQuery(cityFilter, activeCategories, controller.signal)
-    else void runRadiusQuery(center, radius, activeCategories, controller.signal)
-    return () => controller.abort()
+    const query = () => {
+      if (cityFilter) void runCityQuery(cityFilter, activeCategories, controller.signal)
+      else void runRadiusQuery(center, radius, activeCategories, controller.signal)
+    }
+    // A slider can emit dozens of values in one gesture. Wait briefly so only
+    // the settled radius starts a remote query; the previous request is aborted.
+    const timer = window.setTimeout(query, cityFilter ? 0 : 180)
+    return () => { window.clearTimeout(timer); controller.abort() }
   }, [center, radius, activeCategories, cityFilter, runCityQuery, runRadiusQuery])
 
   const filteredPlaces = useMemo(() => places.filter((place) => {

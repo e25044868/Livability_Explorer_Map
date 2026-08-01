@@ -1,14 +1,26 @@
 import type { AdministrativeArea, CategoryKey, Coordinates, GeocodeResult, PlaceListResponse, ViewportBounds } from './types'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ''
+const PLACE_CACHE_TTL_MS = 90_000
+const PLACE_CACHE_MAX_ENTRIES = 40
+const placeCache = new Map<string, { expiresAt: number; response: PlaceListResponse }>()
 
 async function getPlaces(params: URLSearchParams, signal?: AbortSignal) {
+  const key = params.toString()
+  const cached = placeCache.get(key)
+  if (cached && cached.expiresAt > Date.now()) return cached.response
+
   const response = await fetch(`${API_BASE}/api/places?${params}`, { signal })
   if (!response.ok) {
     const detail = await response.json().catch(() => null)
     throw new Error(detail?.message ?? `資料載入失敗（${response.status}）`)
   }
-  return (await response.json()) as PlaceListResponse
+  const payload = (await response.json()) as PlaceListResponse
+  if (!signal?.aborted) {
+    placeCache.set(key, { expiresAt: Date.now() + PLACE_CACHE_TTL_MS, response: payload })
+    if (placeCache.size > PLACE_CACHE_MAX_ENTRIES) placeCache.delete(placeCache.keys().next().value!)
+  }
+  return payload
 }
 
 export function fetchPlacesByRadius(
