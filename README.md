@@ -154,6 +154,7 @@ python -m app.cli.validate_parking_source
 - `PAGE_LAYOUT_PLAN.md`：桌機／手機資訊架構與互動規格。
 - `IMPLEMENTATION_PLAN.md`：整體實作計畫。
 - `docs/decisions/0001-place-attributes-and-evidence-relations.md`：統一地點與關聯證據模型決策。
+- `docs/DEPLOYMENT_RENDER.md`：Render Static Site、FastAPI Web Service 與專用 Supabase PostGIS 部署流程。
 
 ## 重要資料規則
 

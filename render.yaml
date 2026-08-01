@@ -1,0 +1,28 @@
+services:
+  - type: web
+    runtime: static
+    name: taiwan-livability-explorer-map
+    buildCommand: cd frontend && corepack enable && pnpm install --frozen-lockfile && pnpm run build
+    staticPublishPath: frontend/dist
+    autoDeployTrigger: commit
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://taiwan-livability-explorer-map-api.onrender.com
+
+  - type: web
+    runtime: python
+    name: taiwan-livability-explorer-map-api
+    plan: free
+    buildCommand: python -m pip install .
+    startCommand: uvicorn --app-dir backend app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/categories
+    autoDeployTrigger: commit
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: ENABLE_API_DOCS
+        value: "false"
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://taiwan-livability-explorer-map.onrender.com
+      - key: DATABASE_URL
+        sync: false
