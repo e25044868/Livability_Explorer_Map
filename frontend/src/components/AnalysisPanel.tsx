@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { LocateIcon } from './Icons'
 import type { CategoryKey, Coordinates, Place, QueryMode } from '../types'
 
@@ -79,6 +80,20 @@ export function AnalysisPanel({
             </button>
           ))}
         </div>
+        <label className="radius-slider">
+          <span className="sr-only">拖曳調整中心搜尋半徑</span>
+          <input
+            type="range"
+            min="500"
+            max="3000"
+            step="100"
+            value={radius}
+            style={{ '--radius-progress': `${((radius - 500) / 2500) * 100}%` } as CSSProperties}
+            onChange={(event) => onRadiusChange(Number(event.target.value))}
+            aria-valuetext={formatRadius(radius)}
+          />
+          <span className="radius-slider-scale"><span>500 m</span><strong>{formatRadius(radius)}</strong><span>3 km</span></span>
+        </label>
       </section>
 
       <section className="panel-section category-section">
@@ -126,4 +141,8 @@ export function AnalysisPanel({
 function formatDate(value: string) {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('zh-TW')
+}
+
+function formatRadius(value: number) {
+  return value < 1000 ? `${value} m` : `${(value / 1000).toFixed(1).replace('.0', '')} km`
 }

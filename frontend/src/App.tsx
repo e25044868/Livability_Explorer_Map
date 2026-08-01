@@ -24,7 +24,7 @@ function sharedState() {
   const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => ['parking', 'toilet', 'aed', 'pharmacy', 'medical', 'motorcycle_charging', 'drinking_water', 'shelter'].includes(value))
   return {
     center: validTaiwanCenter ? { lat, lng } : INITIAL_CENTER,
-    radius: [500, 1000, 3000].includes(radius) ? radius : 1000,
+    radius: Number.isInteger(radius) && radius >= 500 && radius <= 3000 && radius % 100 === 0 ? radius : 1000,
     categories: categories.length ? categories : ['parking', 'toilet', 'aed', 'drinking_water', 'shelter'] as CategoryKey[],
     city: params.get('city'),
   }
