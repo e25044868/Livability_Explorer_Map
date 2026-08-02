@@ -70,6 +70,7 @@ python -m app.cli.publish_parking_source
 python -m app.cli.publish_parking_source --snapshot <raw-json-path>
 python -m app.cli.publish_toilet_source
 python -m app.cli.publish_national_sources
+python -m app.cli.publish_public_services
 ```
 
 全國公廁與 AED 發布成功後，匯入程式會停用高雄限定的同類來源，避免重複顯示。
@@ -146,6 +147,9 @@ python -m app.cli.validate_parking_source
 - 飲水機使用環境部 `GIS_P_82` 涼適點資料，只發布 `waterdispenser=1` 且通過座標檢查的點位。
 - 避難收容處所使用消防署全國點位檔，公開容量、適用災害、室內外與弱者安置資訊。
 - 重新發布：`python -m app.cli.publish_amenities`。
+- 公共免費 Wi-Fi、消防／救援據點及警察機關使用全國官方資料；重新發布：`python -m app.cli.publish_public_services`。
+- 警察座標會從官方 TWD97 TM2（EPSG:3826）轉為 WGS84，未通過驗證的紀錄不會繪製在地圖。
+- 公共自行車需設定 `TDX_CLIENT_ID` 與 `TDX_CLIENT_SECRET` 才能發布；垃圾清運將以單一城市的官方來源逐步導入。
 - 中央醫療院所與藥局清冊目前只有地址、沒有全國一致的官方座標；在完成可稽核的批次地理編碼前不會假裝成精準地圖點位。
 
 ## 文件
@@ -154,6 +158,7 @@ python -m app.cli.validate_parking_source
 - `PAGE_LAYOUT_PLAN.md`：桌機／手機資訊架構與互動規格。
 - `IMPLEMENTATION_PLAN.md`：整體實作計畫。
 - `docs/decisions/0001-place-attributes-and-evidence-relations.md`：統一地點與關聯證據模型決策。
+- `docs/decisions/0002-public-safety-and-connectivity-sources.md`：Wi-Fi、救援與警察資料的來源、座標與延後項目決策。
 - `docs/DEPLOYMENT_RENDER.md`：Render Static Site、FastAPI Web Service 與既有 convenience-map Supabase PostGIS 的部署流程。
 
 ## 重要資料規則

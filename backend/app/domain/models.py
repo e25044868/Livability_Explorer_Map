@@ -14,6 +14,9 @@ class PlaceCategory(StrEnum):
     MOTORCYCLE_CHARGING = "motorcycle_charging"
     DRINKING_WATER = "drinking_water"
     SHELTER = "shelter"
+    PUBLIC_WIFI = "public_wifi"
+    RESCUE_UNIT = "rescue_unit"
+    POLICE = "police"
 
 
 class LocationAccuracy(StrEnum):

@@ -103,6 +103,9 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-aed .category-icon { background: #c44f4f; }
 .category-drinking_water .category-icon { background: #2486a6; }
 .category-shelter .category-icon { background: #d18a32; }
+.category-public_wifi .category-icon { background: #297c9d; }
+.category-rescue_unit .category-icon { background: #b24a37; }
+.category-police .category-icon { background: #566fa8; }
 .category-pharmacy .category-icon { background: #8b62b3; }
 .category-medical .category-icon { background: #d77a4c; }
 .category-motorcycle_charging .category-icon { background: #7252b8; }
@@ -111,11 +114,17 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-aed.active { border-color: #c44f4f; background: color-mix(in srgb, #c44f4f 11%, var(--paper)); }
 .category-drinking_water.active { border-color: #2486a6; background: color-mix(in srgb, #2486a6 11%, var(--paper)); }
 .category-shelter.active { border-color: #d18a32; background: color-mix(in srgb, #d18a32 11%, var(--paper)); }
+.category-public_wifi.active { border-color: #297c9d; background: color-mix(in srgb, #297c9d 11%, var(--paper)); }
+.category-rescue_unit.active { border-color: #b24a37; background: color-mix(in srgb, #b24a37 11%, var(--paper)); }
+.category-police.active { border-color: #566fa8; background: color-mix(in srgb, #566fa8 11%, var(--paper)); }
 .category-parking .category-count { color: #267e74; background: color-mix(in srgb, #2f9d8f 18%, var(--paper)); }
 .category-toilet .category-count { color: #42678f; background: color-mix(in srgb, #4d78a8 18%, var(--paper)); }
 .category-aed .category-count { color: #a74040; background: color-mix(in srgb, #c44f4f 18%, var(--paper)); }
 .category-drinking_water .category-count { color: #1d6d88; background: color-mix(in srgb, #2486a6 18%, var(--paper)); }
 .category-shelter .category-count { color: #9b641f; background: color-mix(in srgb, #d18a32 18%, var(--paper)); }
+.category-public_wifi .category-count { color: #1d6885; background: color-mix(in srgb, #297c9d 18%, var(--paper)); }
+.category-rescue_unit .category-count { color: #963d2e; background: color-mix(in srgb, #b24a37 18%, var(--paper)); }
+.category-police .category-count { color: #465c8e; background: color-mix(in srgb, #566fa8 18%, var(--paper)); }
 .category-card > span:nth-child(2) { display: flex; flex-direction: column; gap: 3px; }
 .category-card strong { font-size: 15px; }
 .category-card small { color: var(--muted); font-size: 11px; }
@@ -157,6 +166,10 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .facility-marker-wrap.aed span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #c44f4f; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(80,20,20,.3); font-size: 7px; font-weight: 800; }
 .facility-marker-wrap.water span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #2486a6; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(20,70,90,.3); font-size: 11px; font-weight: 800; }
 .facility-marker-wrap.shelter span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #d18a32; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(90,55,15,.3); font-size: 11px; font-weight: 800; }
+.facility-marker-wrap.wifi span,.facility-marker-wrap.rescue span,.facility-marker-wrap.police span { height: 34px; display: grid; place-items: center; color: white; border: 3px solid white; border-radius: 50%; font-weight: 800; }
+.facility-marker-wrap.wifi span { width: 38px; background: #297c9d; box-shadow: 0 4px 10px rgba(20,70,90,.3); font-size: 8px; }
+.facility-marker-wrap.rescue span { width: 34px; background: #b24a37; box-shadow: 0 4px 10px rgba(100,45,30,.3); font-size: 10px; }
+.facility-marker-wrap.police span { width: 34px; background: #566fa8; box-shadow: 0 4px 10px rgba(50,60,110,.3); font-size: 12px; }
 .cluster-marker span { width: 42px; height: 42px; display: grid; place-items: center; color: white; background: var(--green); border: 4px solid color-mix(in srgb, white 78%, var(--green)); border-radius: 50%; box-shadow: 0 4px 12px rgba(16,62,55,.35); font-size: 12px; font-weight: 800; }
 .analysis-center-marker span { width: 22px; height: 22px; display: block; background: var(--orange); border: 5px solid white; border-radius: 50%; box-shadow: 0 0 0 4px rgba(233,134,85,.32), 0 3px 10px rgba(0,0,0,.28); }
 .map-popup { min-width: 190px; display: flex; flex-direction: column; gap: 6px; color: var(--ink); font-family: 'Noto Sans TC', sans-serif; }
@@ -176,6 +189,9 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .place-rank.aed { color: #ffe5e5; background: #9c3f3f; font-size: 8px; }
 .place-rank.drinking_water { color: white; background: #2486a6; }
 .place-rank.shelter { color: white; background: #d18a32; }
+.place-rank.public_wifi { color: #e4fbff; background: #297c9d; font-size: 8px; }
+.place-rank.rescue_unit { color: #ffe8e0; background: #b24a37; }
+.place-rank.police { color: #e9edff; background: #566fa8; }
 .place-card-main { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
 .place-title-row { display: flex; justify-content: space-between; gap: 8px; }
 .place-title-row strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
@@ -194,6 +210,9 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .detail-category.aed { background: #c44f4f; font-size: 8px; }
 .detail-category.drinking_water { background: #2486a6; }
 .detail-category.shelter { background: #d18a32; }
+.detail-category.public_wifi { background: #297c9d; font-size: 8px; }
+.detail-category.rescue_unit { background: #b24a37; }
+.detail-category.police { background: #566fa8; }
 .favorite-button,.drawer-close { width: 34px; height: 34px; display: grid; place-items: center; color: var(--muted); background: var(--soft); border: 0; border-radius: 9px; cursor: pointer; font-size: 20px; }.favorite-button.active { color: #e6a53d; }
 .detail-drawer .eyebrow { margin-top: 18px; }.detail-drawer h2 { margin: 0; font-size: 20px; }.detail-address { color: var(--muted); font-size: 12px; line-height: 1.6; }.detail-phone { color: var(--green); font-size: 12px; }
 .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 18px 0; }.detail-grid div { padding: 10px; background: var(--soft); border-radius: 10px; }.detail-grid dt { color: var(--muted); font-size: 9px; }.detail-grid dd { margin: 4px 0 0; font-size: 11px; line-height: 1.5; }

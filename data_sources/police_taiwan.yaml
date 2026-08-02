@@ -1,0 +1,20 @@
+dataset_key: npa_police_facilities_taiwan
+dataset_id: "5958"
+name: 警察機關地址與座標資料
+category: police
+source_agency: 內政部警政署
+metadata_url: https://data.gov.tw/dataset/5958
+update_frequency: 依官方資料更新
+download:
+  url: https://www.tgos.tw/tgos/VirtualDir/Product/9927eb8a-efed-40c0-8bc4-83121ad6834a/1150729.zip
+  allowed_hosts:
+    - www.tgos.tw
+  format: zip
+  encoding: utf-8-sig
+  timeout_seconds: 60
+  max_bytes: 10000000
+payload_path: data
+quality_gates:
+  minimum_records: 1000
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.5

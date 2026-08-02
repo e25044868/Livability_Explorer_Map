@@ -1,0 +1,20 @@
+dataset_key: moda_itaiwan_public_wifi
+dataset_id: "5962"
+name: iTaiwan 公共區域免費無線上網熱點
+category: public_wifi
+source_agency: 數位發展部
+metadata_url: https://data.gov.tw/dataset/5962
+update_frequency: 依官方資料更新
+download:
+  url: https://itaiwan.gov.tw/ITaiwanDW/GetFile?fileName=IpSelect_tw.json&type=6
+  allowed_hosts:
+    - itaiwan.gov.tw
+  format: json
+  encoding: utf-8
+  timeout_seconds: 60
+  max_bytes: 10000000
+payload_path: data
+quality_gates:
+  minimum_records: 1000
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.5

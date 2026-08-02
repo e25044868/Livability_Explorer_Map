@@ -74,9 +74,10 @@ async def download_source(
             "GET",
             config.download.url,
             headers={
-                "Accept": (
-                    "text/csv" if config.download.format.lower() == "csv" else "application/json"
-                ),
+                "Accept": {
+                    "csv": "text/csv,application/octet-stream",
+                    "zip": "application/zip,application/octet-stream",
+                }.get(config.download.format.lower(), "application/json"),
                 "User-Agent": "livability-map-importer/0.1",
             },
         ) as response:
@@ -85,16 +86,26 @@ async def download_source(
             response.raise_for_status()
             content_type = response.headers.get("content-type", "").lower()
             expected_format = config.download.format.lower()
-            is_json = "json" in content_type
+            # Some official download endpoints label JSON exports as generic binary.
+            # The importer parses and validates the JSON structure before publication.
+            is_json = (
+                "json" in content_type
+                or "text/plain" in content_type
+                or "application/octet-stream" in content_type
+            )
             # Some audited government portals serve CSV downloads as generic binary.
             # The importer still validates the expected header before publishing.
             is_csv = (
                 "csv" in content_type
                 or "text/plain" in content_type
                 or "application/octet-stream" in content_type
+                or not content_type
             )
+            is_zip = "zip" in content_type or "application/octet-stream" in content_type
             if (expected_format == "json" and not is_json) or (
                 expected_format == "csv" and not is_csv
+            ) or (
+                expected_format == "zip" and not is_zip
             ):
                 raise DownloadRejectedError(f"回應不是 {expected_format.upper()} content-type")
             declared_length = response.headers.get("content-length")

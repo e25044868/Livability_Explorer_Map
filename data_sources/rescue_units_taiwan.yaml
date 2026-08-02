@@ -1,0 +1,20 @@
+dataset_key: nfa_rescue_units_taiwan
+dataset_id: "5969"
+name: 救災救護單位位置資訊
+category: rescue_unit
+source_agency: 內政部消防署
+metadata_url: https://data.gov.tw/dataset/5969
+update_frequency: 依官方資料更新
+download:
+  url: https://opdadm.moi.gov.tw/api/v1/no-auth/resource/api/dataset/57F3DD1D-A40E-49A6-8410-57303B2FF87E/resource/C38B7AC2-E7F3-4DD5-A3F3-88E623B55924/download
+  allowed_hosts:
+    - opdadm.moi.gov.tw
+  format: csv
+  encoding: cp950
+  timeout_seconds: 60
+  max_bytes: 5000000
+payload_path: data
+quality_gates:
+  minimum_records: 100
+  maximum_invalid_coordinate_ratio: 0.1
+  maximum_record_count_change_ratio: 0.5

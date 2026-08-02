@@ -36,6 +36,9 @@ CATEGORY_LABELS = {
     PlaceCategory.MOTORCYCLE_CHARGING: "機車充電",
     PlaceCategory.DRINKING_WATER: "飲水機",
     PlaceCategory.SHELTER: "避難收容處所",
+    PlaceCategory.PUBLIC_WIFI: "公共免費 Wi-Fi",
+    PlaceCategory.RESCUE_UNIT: "消防／救援據點",
+    PlaceCategory.POLICE: "警察機關／派出所",
 }
 
 

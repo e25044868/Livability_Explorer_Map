@@ -11,6 +11,9 @@ const sources = [
   { key: 'aedSource', href: 'https://data.gov.tw/dataset/12063' },
   { key: 'waterSource', href: 'https://data.gov.tw/dataset/177893' },
   { key: 'shelterSource', href: 'https://data.gov.tw/dataset/73242' },
+  { key: 'wifiSource', href: 'https://data.gov.tw/dataset/5962' },
+  { key: 'rescueSource', href: 'https://data.gov.tw/dataset/5969' },
+  { key: 'policeSource', href: 'https://data.gov.tw/dataset/5958' },
 ] as const
 
 export function AboutDialog({ onClose }: Props) {

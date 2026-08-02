@@ -41,6 +41,9 @@ const toiletIcon = L.divIcon({ className: 'facility-marker-wrap toilet', html: '
 const aedIcon = L.divIcon({ className: 'facility-marker-wrap aed', html: '<span>AED</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const waterIcon = L.divIcon({ className: 'facility-marker-wrap water', html: '<span>水</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const shelterIcon = L.divIcon({ className: 'facility-marker-wrap shelter', html: '<span>安</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
+const wifiIcon = L.divIcon({ className: 'facility-marker-wrap wifi', html: '<span>WiFi</span>', iconSize: [40, 36], iconAnchor: [20, 18], popupAnchor: [0, -20] })
+const rescueIcon = L.divIcon({ className: 'facility-marker-wrap rescue', html: '<span>119</span>', iconSize: [38, 36], iconAnchor: [19, 18], popupAnchor: [0, -20] })
+const policeIcon = L.divIcon({ className: 'facility-marker-wrap police', html: '<span>警</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const centerIcon = L.divIcon({ className: 'analysis-center-marker', html: '<span></span>', iconSize: [26, 26], iconAnchor: [13, 13] })
 
 function clusterIcon(count: number) {
@@ -162,6 +165,9 @@ function placeIcon(place: Place, selected: boolean) {
   if (place.category === 'aed') return aedIcon
   if (place.category === 'drinking_water') return waterIcon
   if (place.category === 'shelter') return shelterIcon
+  if (place.category === 'public_wifi') return wifiIcon
+  if (place.category === 'rescue_unit') return rescueIcon
+  if (place.category === 'police') return policeIcon
   if ((place.properties.ev_spaces ?? 0) > 0) return evParkingIcon
   return selected ? selectedParkingIcon : parkingIcon
 }

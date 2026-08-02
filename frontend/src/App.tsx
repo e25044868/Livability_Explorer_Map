@@ -22,7 +22,7 @@ function sharedState() {
   const lng = lngValue == null ? Number.NaN : Number(lngValue)
   const radius = radiusValue == null ? Number.NaN : Number(radiusValue)
   const validTaiwanCenter = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 20 && lat <= 27 && lng >= 118 && lng <= 123
-  const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => ['parking', 'toilet', 'aed', 'pharmacy', 'medical', 'motorcycle_charging', 'drinking_water', 'shelter'].includes(value))
+  const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => ['parking', 'toilet', 'aed', 'pharmacy', 'medical', 'motorcycle_charging', 'drinking_water', 'shelter', 'public_wifi', 'rescue_unit', 'police'].includes(value))
   return {
     center: validTaiwanCenter ? { lat, lng } : INITIAL_CENTER,
     radius: Number.isInteger(radius) && radius >= 500 && radius <= 3000 && radius % 100 === 0 ? radius : 1000,

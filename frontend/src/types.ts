@@ -51,9 +51,14 @@ export type ParkingProperties = {
   disaster_types?: string
   vulnerable_friendly?: boolean
   service_villages?: string
+  agency?: string
+  venue_type?: string
+  co_located_with_fire_station?: boolean
+  english_name?: string
+  unit_type?: string
 }
 
-export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter'
+export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter' | 'public_wifi' | 'rescue_unit' | 'police'
 
 export type Place = {
   public_id: string

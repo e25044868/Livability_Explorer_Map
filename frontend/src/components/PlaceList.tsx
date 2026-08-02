@@ -31,7 +31,7 @@ export function PlaceList({ places, selectedId, loading, error, onSelect, favori
           key={place.public_id}
           onClick={() => onSelect(place)}
         >
-          <span className={`place-rank ${place.category}`}>{place.category === 'parking' ? String(index + 1).padStart(2, '0') : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : '安'}</span>
+          <span className={`place-rank ${place.category}`}>{place.category === 'parking' ? String(index + 1).padStart(2, '0') : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : place.category === 'public_wifi' ? 'WiFi' : place.category === 'rescue_unit' ? '119' : place.category === 'police' ? '警' : '安'}</span>
           <span className="place-card-main">
             <span className="place-title-row">
               <strong>{favoriteIds.has(place.public_id) ? '★ ' : ''}{place.name}</strong>
