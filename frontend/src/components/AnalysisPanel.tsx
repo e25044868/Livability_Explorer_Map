@@ -124,18 +124,18 @@ export function AnalysisPanel({
           </div>
           {queryMode === 'viewport' && <span className="status-chip">{t('areaSearch')}</span>}
         </div>
-        <div className="radius-ticks" aria-label={t('chooseRadius')}>
-          {radii.map((value) => (
-            <button
-              key={value}
-              className={radius === value && queryMode === 'radius' ? 'active' : ''}
-              onClick={() => onRadiusChange(value)}
-            >
-              {value < 1000 ? `${value} m` : `${value / 1000} km`}
-            </button>
-          ))}
-        </div>
-        <div className="radius-slider">
+        <div className="radius-control" aria-label={t('chooseRadius')}>
+          <div className="radius-ticks">
+            {radii.map((value) => (
+              <button
+                key={value}
+                className={radius === value && queryMode === 'radius' ? 'active' : ''}
+                onClick={() => onRadiusChange(value)}
+              >
+                {value < 1000 ? `${value} m` : `${value / 1000} km`}
+              </button>
+            ))}
+          </div>
           <span className="sr-only">{t('adjustRadius')}</span>
           <input
             type="range"
@@ -147,7 +147,6 @@ export function AnalysisPanel({
             onChange={(event) => onRadiusChange(Number(event.target.value))}
             aria-valuetext={formatRadius(radius, language)}
           />
-          <span className="radius-slider-scale"><span>500 m</span><strong>{formatRadius(radius, language)}</strong><span>3 km</span></span>
         </div>
       </section>
 
