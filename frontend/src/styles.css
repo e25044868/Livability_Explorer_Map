@@ -83,10 +83,12 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .section-heading h2 { margin: 0; font-size: 18px; }
 .status-chip { padding: 5px 8px; color: var(--green); background: var(--mint); border-radius: 20px; font-size: 10px; font-weight: 700; }
-.radius-switch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 4px; background: var(--soft); border-radius: 12px; }
-.radius-switch button { padding: 9px 4px; color: var(--muted); background: transparent; border: 0; border-radius: 9px; cursor: pointer; font-size: 14px; font-weight: 600; }
-.radius-switch button.active { color: white; background: var(--green); box-shadow: 0 3px 10px rgba(21,109,98,.2); }
-.radius-slider { display: block; margin-top: 13px; }
+.radius-ticks { display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; margin: 0 0 10px; border-bottom: 1px solid var(--line); }
+.radius-ticks button { position: relative; padding: 6px 4px 11px; color: var(--muted); background: transparent; border: 0; cursor: pointer; font-size: 13px; font-weight: 700; }
+.radius-ticks button:first-child { text-align: left; }.radius-ticks button:last-child { text-align: right; }
+.radius-ticks button.active { color: var(--green); }
+.radius-ticks button.active::after { content: ''; width: 5px; height: 5px; position: absolute; bottom: -3px; left: 50%; border-radius: 50%; background: var(--green); }
+.radius-slider { display: block; }
 .radius-slider input { width: 100%; height: 5px; margin: 0; appearance: none; accent-color: var(--green); cursor: pointer; border-radius: 999px; background: linear-gradient(90deg, var(--green) 0%, var(--green) calc((var(--radius-progress, 20%))), var(--line) calc((var(--radius-progress, 20%))), var(--line) 100%); }
 .radius-slider input::-webkit-slider-thumb { width: 18px; height: 18px; appearance: none; border: 3px solid var(--paper); border-radius: 50%; background: var(--green); box-shadow: 0 2px 8px var(--shadow); }
 .radius-slider input::-moz-range-thumb { width: 14px; height: 14px; border: 3px solid var(--paper); border-radius: 50%; background: var(--green); box-shadow: 0 2px 8px var(--shadow); }
@@ -109,6 +111,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-public_wifi .category-icon { background: #297c9d; }
 .category-rescue_unit .category-icon { background: #b24a37; }
 .category-police .category-icon { background: #566fa8; }
+.category-library .category-icon { background: #7657a8; }
+.category-public_bicycle .category-icon { background: #3e9d6c; }
 .category-pharmacy .category-icon { background: #8b62b3; }
 .category-medical .category-icon { background: #d77a4c; }
 .category-motorcycle_charging .category-icon { background: #7252b8; }
@@ -120,6 +124,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-public_wifi.active { border-color: #297c9d; background: color-mix(in srgb, #297c9d 11%, var(--paper)); }
 .category-rescue_unit.active { border-color: #b24a37; background: color-mix(in srgb, #b24a37 11%, var(--paper)); }
 .category-police.active { border-color: #566fa8; background: color-mix(in srgb, #566fa8 11%, var(--paper)); }
+.category-library.active { border-color: #7657a8; background: color-mix(in srgb, #7657a8 11%, var(--paper)); }
+.category-public_bicycle.active { border-color: #3e9d6c; background: color-mix(in srgb, #3e9d6c 11%, var(--paper)); }
 .category-parking .category-count { color: #267e74; background: color-mix(in srgb, #2f9d8f 18%, var(--paper)); }
 .category-toilet .category-count { color: #42678f; background: color-mix(in srgb, #4d78a8 18%, var(--paper)); }
 .category-aed .category-count { color: #a74040; background: color-mix(in srgb, #c44f4f 18%, var(--paper)); }
@@ -128,6 +134,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-public_wifi .category-count { color: #1d6885; background: color-mix(in srgb, #297c9d 18%, var(--paper)); }
 .category-rescue_unit .category-count { color: #963d2e; background: color-mix(in srgb, #b24a37 18%, var(--paper)); }
 .category-police .category-count { color: #465c8e; background: color-mix(in srgb, #566fa8 18%, var(--paper)); }
+.category-library .category-count { color: #64438e; background: color-mix(in srgb, #7657a8 18%, var(--paper)); }
+.category-public_bicycle .category-count { color: #28734b; background: color-mix(in srgb, #3e9d6c 18%, var(--paper)); }
 .category-card > span:nth-child(2) { display: flex; flex-direction: column; gap: 3px; }
 .category-card strong { font-size: 15px; }
 .category-card small { color: var(--muted); font-size: 11px; }
@@ -175,6 +183,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .facility-marker-wrap.wifi span { width: 38px; background: #297c9d; box-shadow: 0 4px 10px rgba(20,70,90,.3); font-size: 8px; }
 .facility-marker-wrap.rescue span { width: 34px; background: #b24a37; box-shadow: 0 4px 10px rgba(100,45,30,.3); font-size: 10px; }
 .facility-marker-wrap.police span { width: 34px; background: #566fa8; box-shadow: 0 4px 10px rgba(50,60,110,.3); font-size: 12px; }
+.facility-marker-wrap.library span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #7657a8; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(70,45,105,.3); font-size: 12px; font-weight: 800; }
+.facility-marker-wrap.public-bicycle span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #3e9d6c; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(30,100,65,.3); font-size: 12px; font-weight: 800; }
 .cluster-marker span { width: 42px; height: 42px; display: grid; place-items: center; color: white; background: var(--green); border: 4px solid color-mix(in srgb, white 78%, var(--green)); border-radius: 50%; box-shadow: 0 4px 12px rgba(16,62,55,.35); font-size: 12px; font-weight: 800; }
 .analysis-center-marker span { width: 22px; height: 22px; display: block; background: var(--orange); border: 5px solid white; border-radius: 50%; box-shadow: 0 0 0 4px rgba(233,134,85,.32), 0 3px 10px rgba(0,0,0,.28); }
 .map-popup { min-width: 190px; display: flex; flex-direction: column; gap: 6px; color: var(--ink); font-family: 'Noto Sans TC', sans-serif; }
@@ -197,6 +207,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .place-rank.public_wifi { color: #e4fbff; background: #297c9d; font-size: 8px; }
 .place-rank.rescue_unit { color: #ffe8e0; background: #b24a37; }
 .place-rank.police { color: #e9edff; background: #566fa8; }
+.place-rank.public_bicycle { color: #e5fff0; background: #3e9d6c; }
 .place-card-main { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
 .place-title-row { display: flex; justify-content: space-between; gap: 8px; }
 .place-title-row strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
@@ -218,6 +229,8 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .detail-category.public_wifi { background: #297c9d; font-size: 8px; }
 .detail-category.rescue_unit { background: #b24a37; }
 .detail-category.police { background: #566fa8; }
+.detail-category.library { background: #7657a8; }
+.detail-category.public_bicycle { background: #3e9d6c; }
 .favorite-button,.drawer-close { width: 34px; height: 34px; display: grid; place-items: center; color: var(--muted); background: var(--soft); border: 0; border-radius: 9px; cursor: pointer; font-size: 20px; }.favorite-button.active { color: #e6a53d; }
 .detail-drawer .eyebrow { margin-top: 18px; }.detail-drawer h2 { margin: 0; font-size: 20px; }.detail-address { color: var(--muted); font-size: 12px; line-height: 1.6; }.detail-phone { color: var(--green); font-size: 12px; }
 .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 18px 0; }.detail-grid div { padding: 10px; background: var(--soft); border-radius: 10px; }.detail-grid dt { color: var(--muted); font-size: 9px; }.detail-grid dd { margin: 4px 0 0; font-size: 11px; line-height: 1.5; }

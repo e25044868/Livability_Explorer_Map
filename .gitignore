@@ -13,6 +13,7 @@ frontend/dist/
 backend/.mypy_cache/
 backend/.ruff_cache/
 data/raw/
+backend/data/
 test-runs/
 .test-runs*/
 .docx_work/

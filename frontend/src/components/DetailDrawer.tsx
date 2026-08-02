@@ -36,7 +36,7 @@ export function DetailDrawer({ place, favorite, onClose, onToggleFavorite, dataV
   return (
     <aside className="detail-drawer" aria-label={interpolate(t('details'), { name: place.name })}>
       <div className="detail-actions">
-        <span className={`detail-category ${place.category}`}>{place.category === 'parking' ? 'P' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : place.category === 'public_wifi' ? 'WiFi' : place.category === 'rescue_unit' ? '119' : place.category === 'police' ? '警' : '安'}</span>
+        <span className={`detail-category ${place.category}`}>{place.category === 'parking' ? 'P' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : place.category === 'public_wifi' ? 'WiFi' : place.category === 'rescue_unit' ? '119' : place.category === 'police' ? '警' : place.category === 'library' ? '書' : place.category === 'public_bicycle' ? '車' : '安'}</span>
         <div>
           <button className={`favorite-button ${favorite ? 'active' : ''}`} onClick={onToggleFavorite} aria-label={favorite ? t('removeFavorite') : t('addFavorite')}>{favorite ? '★' : '☆'}</button>
           <button className="drawer-close" onClick={onClose} aria-label={t('closeDetails')}>×</button>
@@ -69,6 +69,8 @@ function sourceLabel(place: Place, t: (key: never) => string) {
   if (place.category === 'public_wifi') return t('nationalWifi' as never)
   if (place.category === 'rescue_unit') return t('nationalRescue' as never)
   if (place.category === 'police') return t('nationalPolice' as never)
+  if (place.category === 'library') return t('nationalLibrary' as never)
+  if (place.category === 'public_bicycle') return t('nationalPublicBicycle' as never)
   return t('governmentData' as never)
 }
 

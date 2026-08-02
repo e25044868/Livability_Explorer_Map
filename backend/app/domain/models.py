@@ -17,6 +17,8 @@ class PlaceCategory(StrEnum):
     PUBLIC_WIFI = "public_wifi"
     RESCUE_UNIT = "rescue_unit"
     POLICE = "police"
+    LIBRARY = "library"
+    PUBLIC_BICYCLE = "public_bicycle"
 
 
 class LocationAccuracy(StrEnum):

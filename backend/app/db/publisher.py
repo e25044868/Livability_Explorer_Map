@@ -47,6 +47,10 @@ class SqlAlchemyImportPublisher:
     ) -> int:
         if not quality.accepted:
             raise ValueError("品質閘門未通過，不得發布")
+        # Official open-data exports can repeat the same entity. PostgreSQL cannot
+        # upsert one unique key twice in a single INSERT statement, so retain one
+        # deterministic record per source external ID before batching.
+        unique_places = list({place.external_id: place for place in places}.values())
         config_hash = hashlib.sha256(
             json.dumps(config.model_dump(), sort_keys=True).encode("utf-8")
         ).hexdigest()
@@ -99,10 +103,10 @@ class SqlAlchemyImportPublisher:
                         import_status="validated",
                     )
                 )
-            external_ids = [place.external_id for place in places]
+            external_ids = [place.external_id for place in unique_places]
             now = datetime.now(UTC)
             place_values: list[dict[str, object]] = []
-            for place in places:
+            for place in unique_places:
                 values = {
                     "data_source_id": source.id,
                     "external_id": place.external_id,
@@ -146,6 +150,6 @@ class SqlAlchemyImportPublisher:
                 PlaceRecord.external_id.not_in(external_ids),
             ).update({PlaceRecord.is_active: False}, synchronize_session=False)
             run.status = "published"
-            run.published_count = len(places)
+            run.published_count = len(unique_places)
             run.finished_at = now
-        return len(places)
+        return len(unique_places)

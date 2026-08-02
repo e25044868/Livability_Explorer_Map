@@ -34,6 +34,8 @@ const categoryOptions: { key: CategoryKey; symbol: string; available: boolean }[
   { key: 'public_wifi', symbol: 'WiFi', available: true },
   { key: 'rescue_unit', symbol: '119', available: true },
   { key: 'police', symbol: '警', available: true },
+  { key: 'library', symbol: '書', available: true },
+  { key: 'public_bicycle', symbol: '車', available: true },
   { key: 'pharmacy', symbol: '藥', available: false },
   { key: 'medical', symbol: '醫', available: false },
   { key: 'motorcycle_charging', symbol: '⚡', available: false },
@@ -122,7 +124,7 @@ export function AnalysisPanel({
           </div>
           {queryMode === 'viewport' && <span className="status-chip">{t('areaSearch')}</span>}
         </div>
-        <div className="radius-switch" aria-label={t('chooseRadius')}>
+        <div className="radius-ticks" aria-label={t('chooseRadius')}>
           {radii.map((value) => (
             <button
               key={value}
@@ -133,7 +135,7 @@ export function AnalysisPanel({
             </button>
           ))}
         </div>
-        <label className="radius-slider">
+        <div className="radius-slider">
           <span className="sr-only">{t('adjustRadius')}</span>
           <input
             type="range"
@@ -146,7 +148,7 @@ export function AnalysisPanel({
             aria-valuetext={formatRadius(radius, language)}
           />
           <span className="radius-slider-scale"><span>500 m</span><strong>{formatRadius(radius, language)}</strong><span>3 km</span></span>
-        </label>
+        </div>
       </section>
 
       <section className={`panel-section category-section ${mobileCategoriesOpen ? 'mobile-open' : ''}`}>

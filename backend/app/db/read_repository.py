@@ -66,6 +66,8 @@ PUBLIC_PROPERTY_KEYS: dict[str, set[str]] = {
     "public_wifi": {"agency", "venue_type"},
     "rescue_unit": {"co_located_with_fire_station"},
     "police": {"english_name", "unit_type"},
+    "library": {"website"},
+    "public_bicycle": {"station_capacity", "available_rent_bikes", "available_return_bikes", "service_status", "live_updated_at", "bike_sharing_type"},
 }
 
 

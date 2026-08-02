@@ -139,3 +139,41 @@ def normalize_police(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]:
             )
         )
     return places
+
+
+def normalize_libraries(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]:
+    """Normalize the nested official Public Library Information Network response."""
+    places: list[PlaceDraft] = []
+    for city_group in rows:
+        if not isinstance(city_group, Mapping):
+            continue
+        city = _text(city_group.get("縣市"))
+        libraries = city_group.get("圖書館資訊")
+        if not isinstance(libraries, list):
+            continue
+        for row in libraries:
+            if not isinstance(row, Mapping):
+                continue
+            name = _text(row.get("Name")) or "公共圖書館"
+            address = _text(row.get("Address"))
+            parsed_city, district = _city_district(address)
+            coordinate = validate_wgs84(row.get("Latitude"), row.get("Longitude"))
+            places.append(
+                PlaceDraft(
+                    external_id=_id("public-library-", name, address),
+                    name=name,
+                    category=PlaceCategory.LIBRARY,
+                    subcategory="公共圖書館",
+                    address=address,
+                    city=parsed_city or city,
+                    district=district or _text(row.get("Area")),
+                    latitude=coordinate.latitude,
+                    longitude=coordinate.longitude,
+                    location_accuracy=coordinate.accuracy,
+                    phone=_text(row.get("TEL")),
+                    source_dataset="公共圖書館基本資料",
+                    source_agency="國立公共資訊圖書館",
+                    properties={"website": _text(row.get("URL"))},
+                )
+            )
+    return places

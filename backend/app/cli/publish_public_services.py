@@ -17,12 +17,15 @@ from app.importers.public_services import (
     normalize_police,
     normalize_public_wifi,
     normalize_rescue_units,
+    normalize_libraries,
 )
 from app.importers.quality import evaluate_quality
 from app.importers.snapshots import FileRawSnapshotStore
 from app.settings import Settings
 from app.sources.config import SourceConfig, load_source_config
 from app.sources.downloader import download_source
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _csv_rows(content: bytes, encoding: str) -> list[dict[str, object]]:
@@ -62,10 +65,16 @@ def _normalise(config: SourceConfig, content: bytes) -> tuple[bytes, list]:
         if not rows or not required.issubset(rows[0]):
             raise ValueError("警察資料 CSV 缺少必要欄位")
         return json.dumps({"data": rows}, ensure_ascii=False).encode(), normalize_police(rows)
+    if config.category == "library":
+        rows = json.loads(content.decode(config.download.encoding))
+        if not isinstance(rows, list):
+            raise ValueError("公共圖書館 JSON 缺少縣市資料陣列")
+        return json.dumps({"data": rows}, ensure_ascii=False).encode(), normalize_libraries(rows)
     raise ValueError(f"未支援的類別：{config.category}")
 
 
-async def main_async(snapshot_root: Path = Path("data/raw")) -> list[dict[str, object]]:
+async def main_async(snapshot_root: Path | None = None) -> list[dict[str, object]]:
+    snapshot_root = snapshot_root or PROJECT_ROOT / "data" / "raw"
     settings = Settings()
     if not settings.database_url:
         raise RuntimeError("DATABASE_URL 未設定")
@@ -74,9 +83,10 @@ async def main_async(snapshot_root: Path = Path("data/raw")) -> list[dict[str, o
     results: list[dict[str, object]] = []
     try:
         for source_path in (
-            Path("data_sources/public_wifi_taiwan.yaml"),
-            Path("data_sources/rescue_units_taiwan.yaml"),
-            Path("data_sources/police_taiwan.yaml"),
+            PROJECT_ROOT / "data_sources" / "public_wifi_taiwan.yaml",
+            PROJECT_ROOT / "data_sources" / "rescue_units_taiwan.yaml",
+            PROJECT_ROOT / "data_sources" / "police_taiwan.yaml",
+            PROJECT_ROOT / "data_sources" / "libraries_taiwan.yaml",
         ):
             config = load_source_config(source_path)
             downloaded = await download_source(config)

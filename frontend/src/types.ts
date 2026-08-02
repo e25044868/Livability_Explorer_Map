@@ -56,9 +56,13 @@ export type ParkingProperties = {
   co_located_with_fire_station?: boolean
   english_name?: string
   unit_type?: string
+  station_capacity?: number
+  available_rent_bikes?: number
+  available_return_bikes?: number
+  bike_sharing_type?: string
 }
 
-export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter' | 'public_wifi' | 'rescue_unit' | 'police'
+export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter' | 'public_wifi' | 'rescue_unit' | 'police' | 'library' | 'public_bicycle'
 
 export type Place = {
   public_id: string
