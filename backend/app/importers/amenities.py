@@ -4,8 +4,8 @@ import hashlib
 import re
 from collections.abc import Iterable, Mapping
 
-from app.domain.models import PlaceCategory, PlaceDraft
-from app.services.coordinates import validate_wgs84
+from app.domain.models import LocationAccuracy, PlaceCategory, PlaceDraft
+from app.services.coordinates import CoordinateResult, validate_wgs84
 
 
 # Verified source correction: the National Fire Agency shelter feed locates
@@ -16,6 +16,15 @@ _SHELTER_COORDINATE_CORRECTIONS = {
         22.662873975834,
         120.48644449124,
     ),
+}
+
+# These National Fire Agency coordinates point into the Taiwan Strait despite
+# their Pingtung City addresses. There is not yet a second official source with
+# an exact matching coordinate, so keep the places searchable but off-map.
+_SHELTER_UNVERIFIED_COORDINATES = {
+    ("屏東縣", "屏東市", "屏東市復興公園", "建興南路35號"),
+    ("屏東縣", "屏東市", "屏東市千禧公園", "自由、大連、廣東、勝利東路廓內"),
+    ("屏東縣", "屏東市", "屏東市廣興公園", "監理站對面"),
 }
 
 
@@ -78,9 +87,17 @@ def normalize_shelters(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]
         name = _text(row.get("避難收容處所名稱")) or "避難收容處所"
         coordinate = validate_wgs84(row.get("緯度"), row.get("經度"))
         address = _text(row.get("避難收容處所地址"))
-        correction = _SHELTER_COORDINATE_CORRECTIONS.get((city, district, name, address))
+        place_key = (city, district, name, address)
+        correction = _SHELTER_COORDINATE_CORRECTIONS.get(place_key)
         if correction is not None:
             coordinate = validate_wgs84(*correction)
+        elif place_key in _SHELTER_UNVERIFIED_COORDINATES:
+            coordinate = CoordinateResult(
+                latitude=None,
+                longitude=None,
+                accuracy=LocationAccuracy.INVALID,
+                error="source_coordinate_conflicts_with_address",
+            )
         capacity_text = _text(row.get("預計收容人數"))
         try:
             capacity = int(float(capacity_text or 0))

@@ -64,6 +64,26 @@ def test_shelter_uses_verified_coordinate_for_pingtung_school() -> None:
     assert place.properties["coordinate_correction"] == "verified_co_located_official_aed"
 
 
+def test_shelter_keeps_known_pingtung_sea_coordinate_off_map() -> None:
+    places = normalize_shelters(
+        [
+            {
+                "序號": "1",
+                "縣市及鄉鎮市區": "屏東縣屏東市",
+                "避難收容處所名稱": "屏東市復興公園",
+                "避難收容處所地址": "建興南路35號",
+                "緯度": "22.3931",
+                "經度": "120.2857",
+            }
+        ]
+    )
+
+    place = places[0]
+    assert place.latitude is None
+    assert place.longitude is None
+    assert place.location_accuracy.value == "invalid"
+
+
 def test_aed_keeps_known_address_coordinate_conflict_off_map() -> None:
     places = normalize_national_aed(
         [
