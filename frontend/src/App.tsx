@@ -252,8 +252,8 @@ export default function App() {
         <div className="topbar-actions">
           <button className="share-button" onClick={() => void shareMap()} aria-label={t('share')}>{t('share')}</button>
           <nav className="view-switch" aria-label={t('map')}>
-            <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}><MapPinIcon size={17}/>{t('map')}</button>
-            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}><ListIcon size={17}/>{t('list')}</button>
+            <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')} aria-label={t('map')}><MapPinIcon size={17}/>{t('map')}</button>
+            <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')} aria-label={t('list')}><ListIcon size={17}/>{t('list')}</button>
           </nav>
           <button className="about-button" onClick={() => setAboutOpen(true)}>{t('about')}</button>
           <button className="language-toggle" onClick={() => setLanguage((current) => current === 'zh-TW' ? 'en' : 'zh-TW')} aria-label={language === 'zh-TW' ? 'Switch to English' : '切換為中文'}>{language === 'zh-TW' ? 'EN' : '中文'}</button>

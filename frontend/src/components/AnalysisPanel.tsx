@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useRef, useState, type CSSProperties } from 'react'
 import { LocateIcon } from './Icons'
 import { CitySelector } from './CitySelector'
 import { SearchBar } from './SearchBar'
@@ -61,6 +61,10 @@ export function AnalysisPanel({
   onSearchSelect,
 }: Props) {
   const { language, t, categoryLabel } = useI18n()
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false)
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
+  const sheetTouchStart = useRef<number | null>(null)
+  const suppressSheetClick = useRef(false)
   const carSpaces = places.reduce((sum, place) => sum + (place.properties.car_spaces ?? 0), 0)
   const motorcycleSpaces = places.reduce(
     (sum, place) => sum + (place.properties.motorcycle_spaces ?? 0),
@@ -68,7 +72,29 @@ export function AnalysisPanel({
   )
 
   return (
-    <aside className="analysis-panel" aria-label={t('analysisCenter')}>
+    <aside className={`analysis-panel ${mobileSheetOpen ? 'mobile-sheet-open' : ''}`} aria-label={t('analysisCenter')}>
+      <button
+        className="mobile-sheet-handle"
+        onClick={() => {
+          if (suppressSheetClick.current) { suppressSheetClick.current = false; return }
+          setMobileSheetOpen((current) => !current)
+        }}
+        onPointerDown={(event) => { sheetTouchStart.current = event.clientY }}
+        onPointerUp={(event) => {
+          if (sheetTouchStart.current == null) return
+          const movement = event.clientY - sheetTouchStart.current
+          if (Math.abs(movement) > 28) suppressSheetClick.current = true
+          if (movement < -28) setMobileSheetOpen(true)
+          if (movement > 28) setMobileSheetOpen(false)
+          sheetTouchStart.current = null
+        }}
+        aria-expanded={mobileSheetOpen}
+      >
+        <span aria-hidden="true" />
+        <strong>{t('mobilePanel')}</strong>
+        <small>{activeCategories.length}</small>
+      </button>
+      <div className="mobile-sheet-content">
       <section className="panel-section location-section">
         <p className="eyebrow">{t('analysisCenter')}</p>
         <div className="location-row">
@@ -123,8 +149,11 @@ export function AnalysisPanel({
         </label>
       </section>
 
-      <section className="panel-section category-section">
+      <section className={`panel-section category-section ${mobileCategoriesOpen ? 'mobile-open' : ''}`}>
         <p className="eyebrow">{t('dataCategories')}</p>
+        <button className="mobile-category-toggle" onClick={() => setMobileCategoriesOpen((current) => !current)} aria-expanded={mobileCategoriesOpen}>
+          <span>{t('dataCategories')}</span><strong>{activeCategories.length}</strong><span aria-hidden="true">{mobileCategoriesOpen ? '−' : '+'}</span>
+        </button>
         <div className="category-list">
           {categoryOptions.map((option) => {
             const active = activeCategories.includes(option.key)
@@ -161,6 +190,7 @@ export function AnalysisPanel({
         <span className="live-dot" />
         <span>{dataVersion === 'empty' ? t('waitingData') : `${t('dataUpdated')}${formatDate(dataVersion, language)}`}</span>
       </footer>
+      </div>
     </aside>
   )
 }
