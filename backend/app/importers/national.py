@@ -5,8 +5,17 @@ import re
 import unicodedata
 from collections.abc import Iterable, Mapping
 
-from app.domain.models import PlaceCategory, PlaceDraft
-from app.services.coordinates import validate_wgs84
+from app.domain.models import LocationAccuracy, PlaceCategory, PlaceDraft
+from app.services.coordinates import CoordinateResult, validate_wgs84
+
+
+# The source occasionally publishes a valid-looking Taiwan coordinate that does
+# not match the accompanying address. Do not invent a replacement coordinate:
+# retain the record for text search, but exclude it from map output until the
+# publishing agency corrects the source row.
+_AED_UNVERIFIED_COORDINATES = {
+    ("佳平村活動廣場", "屏東縣泰武鄉佳平村1鄰3號"),
+}
 
 
 def _clean(value: object) -> str | None:
@@ -89,6 +98,13 @@ def normalize_national_aed(rows: Iterable[Mapping[str, object]]) -> list[PlaceDr
         address = _clean(row.get("場所地址"))
         city, district = _city_district(address, _clean(row.get("場所縣市")))
         coordinate = validate_wgs84(row.get("地點LAT"), row.get("地點LNG"))
+        if (name, address) in _AED_UNVERIFIED_COORDINATES:
+            coordinate = CoordinateResult(
+                latitude=None,
+                longitude=None,
+                accuracy=LocationAccuracy.INVALID,
+                error="source_coordinate_conflicts_with_address",
+            )
         aed_id = _clean(row.get("AEDID")) or _clean(row.get("場所ID"))
         available_hours = _clean(row.get("開放使用時間備註"))
         output.append(

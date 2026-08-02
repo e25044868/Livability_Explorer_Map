@@ -8,6 +8,17 @@ from app.domain.models import PlaceCategory, PlaceDraft
 from app.services.coordinates import validate_wgs84
 
 
+# Verified source correction: the National Fire Agency shelter feed locates
+# this Pingtung school at sea. Two official AED records share the same name and
+# address and agree within four metres, so their location is used instead.
+_SHELTER_COORDINATE_CORRECTIONS = {
+    ("屏東縣", "屏東市", "國立屏東高級工業職業學校", "建國路25號"): (
+        22.662873975834,
+        120.48644449124,
+    ),
+}
+
+
 def _text(value: object) -> str | None:
     value = str(value or "").strip()
     return value or None
@@ -66,6 +77,10 @@ def normalize_shelters(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]
         district = area[len(city_match.group(1)) :] or None if city_match else None
         name = _text(row.get("避難收容處所名稱")) or "避難收容處所"
         coordinate = validate_wgs84(row.get("緯度"), row.get("經度"))
+        address = _text(row.get("避難收容處所地址"))
+        correction = _SHELTER_COORDINATE_CORRECTIONS.get((city, district, name, address))
+        if correction is not None:
+            coordinate = validate_wgs84(*correction)
         capacity_text = _text(row.get("預計收容人數"))
         try:
             capacity = int(float(capacity_text or 0))
@@ -77,7 +92,7 @@ def normalize_shelters(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]
                 name=name,
                 category=PlaceCategory.SHELTER,
                 subcategory="避難收容處所",
-                address=_text(row.get("避難收容處所地址")),
+                address=address,
                 city=city,
                 district=district,
                 latitude=coordinate.latitude,
@@ -93,6 +108,9 @@ def normalize_shelters(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]
                     "outdoor": _yes(row.get("室外")),
                     "vulnerable_friendly": _yes(row.get("適合避難弱者安置")),
                     "service_villages": _text(row.get("預計收容村里")),
+                    "coordinate_correction": "verified_co_located_official_aed"
+                    if correction is not None
+                    else None,
                 },
             )
         )
