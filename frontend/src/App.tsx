@@ -113,13 +113,15 @@ export default function App() {
     setLoading(true); setError(null)
     try {
       const response = await fetchPlacesByDistrict(city, district, categories, signal)
-      setPlaces(response.items); setDataVersion(response.data_version); setQueryMode('city'); setShowSearchArea(false)
-      const coordinates = response.items.filter((item) => item.latitude != null && item.longitude != null)
+      // Official datasets occasionally contain a coordinate that is labelled with
+      // the correct district but is geographically far away. Keep the source
+      // record in the database, while preventing a clearly misplaced point from
+      // distorting this district-only map view and its auto-fit bounds.
+      const districtPlaces = excludeDistrictCoordinateOutliers(response.items)
+      setPlaces(districtPlaces); setDataVersion(response.data_version); setQueryMode('city'); setShowSearchArea(false)
+      const coordinates = districtPlaces.filter((item) => item.latitude != null && item.longitude != null)
       if (coordinates.length) {
-        const nextCenter = {
-          lat: coordinates.reduce((sum, item) => sum + item.latitude!, 0) / coordinates.length,
-          lng: coordinates.reduce((sum, item) => sum + item.longitude!, 0) / coordinates.length,
-        }
+        const nextCenter = coordinateMedian(coordinates)
         setCenter((current) => Math.abs(current.lat - nextCenter.lat) > .00001 || Math.abs(current.lng - nextCenter.lng) > .00001 ? nextCenter : current)
       }
     } catch (reason) {
@@ -262,7 +264,7 @@ export default function App() {
       <div className="workspace">
         <AnalysisPanel center={center} radius={radius} queryMode={queryMode} places={places} loading={loading} dataVersion={dataVersion} onRadiusChange={(value) => { setRadius(value); setQueryMode('radius') }} onLocate={handleLocate} activeCategories={activeCategories} onToggleCategory={handleToggleCategory} city={cityFilter ?? detectedCity ?? '高雄市'} district={districtFilter} districts={districts} detectedCity={cityFilter ? null : detectedCity} onCityChange={handleCityChange} onDistrictChange={handleDistrictChange} onSearchSelect={handleSearchSelect} />
         <section className={`results-area ${viewMode}`}>
-          <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
+          <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? districtFilter ? interpolate(t('districtData'), { city: cityLabel(cityFilter), district: districtFilter }) : interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
           <FilterBar filters={filters} onChange={setFilters} sortMode={sortMode} onSortChange={setSortMode} intersectionReady={activeCategories.includes('parking') && activeCategories.includes('toilet')} intersectionCount={intersectionCount} />
           <div className="map-view"><MapView center={center} radius={radius} queryMode={queryMode} places={filteredPlaces} selectedPlace={selectedPlace} loading={loading} showSearchArea={showSearchArea} onBoundsChange={handleBoundsChange} onSearchArea={handleSearchArea} onSelect={selectPlace} onSetCenter={handleSetCenter} /></div>
           <div className="list-view"><PlaceList places={filteredPlaces} selectedId={selectedPlace?.public_id ?? null} loading={loading} error={error} onSelect={(place) => { selectPlace(place); if (window.innerWidth < 760) setViewMode('map') }} favoriteIds={favoriteIds} /></div>
@@ -300,4 +302,27 @@ function placeDistance(place: Place, center: Coordinates) {
   if (place.distance_meters != null) return place.distance_meters
   if (place.latitude == null || place.longitude == null) return Number.MAX_SAFE_INTEGER
   return distanceMeters(place, { ...place, latitude: center.lat, longitude: center.lng })
+}
+
+function coordinateMedian(places: Place[]): Coordinates {
+  const median = (values: number[]) => {
+    const ordered = [...values].sort((a, b) => a - b)
+    const middle = Math.floor(ordered.length / 2)
+    return ordered.length % 2 ? ordered[middle] : (ordered[middle - 1] + ordered[middle]) / 2
+  }
+  return { lat: median(places.map((place) => place.latitude!)), lng: median(places.map((place) => place.longitude!)) }
+}
+
+function excludeDistrictCoordinateOutliers(places: Place[]) {
+  const mappable = places.filter((place) => place.latitude != null && place.longitude != null)
+  if (mappable.length < 5) return places
+
+  const medianCenter = coordinateMedian(mappable)
+  const distances = mappable.map((place) => distanceMeters(place, { ...place, latitude: medianCenter.lat, longitude: medianCenter.lng }))
+  const orderedDistances = [...distances].sort((a, b) => a - b)
+  const middle = Math.floor(orderedDistances.length / 2)
+  const medianDistance = orderedDistances.length % 2 ? orderedDistances[middle] : (orderedDistances[middle - 1] + orderedDistances[middle]) / 2
+  const maximumDistance = Math.max(12_000, medianDistance * 6)
+
+  return places.filter((place) => place.latitude == null || place.longitude == null || distanceMeters(place, { ...place, latitude: medianCenter.lat, longitude: medianCenter.lng }) <= maximumDistance)
 }

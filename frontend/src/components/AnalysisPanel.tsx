@@ -70,7 +70,7 @@ export function AnalysisPanel({
         <p className="eyebrow">{t('analysisCenter')}</p>
         <div className="location-row">
           <div>
-            <strong>{t('kaohsiungCenter')}</strong>
+            <strong>{district ? `${city} · ${district}` : city}</strong>
             <span>{center.lat.toFixed(4)}, {center.lng.toFixed(4)}</span>
           </div>
           <button className="icon-button" onClick={onLocate} title={t('useLocation')} aria-label={t('useLocation')}>
