@@ -24,7 +24,7 @@ export function CitySelector({
   onChange: (city: string) => void
   onDistrictChange: (district: string | null) => void
 }) {
-  const { t, cityLabel } = useI18n()
+  const { t, cityLabel, districtLabel } = useI18n()
   return (
     <div className="area-selectors">
       <label className="city-selector">
@@ -37,7 +37,7 @@ export function CitySelector({
         <span>{t('district')}</span>
         <select value={district ?? ''} onChange={(event) => onDistrictChange(event.target.value || null)} aria-label={t('selectDistrict')}>
           <option value="">{t('allDistricts')}</option>
-          {districts.map((item) => <option key={item} value={item}>{item}</option>)}
+          {districts.map((item) => <option key={item} value={item}>{districtLabel(item)}</option>)}
         </select>
       </label>
       {detectedCity && <small className="detected-city">{t('detected')}{cityLabel(detectedCity)}</small>}

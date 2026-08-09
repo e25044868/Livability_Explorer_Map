@@ -9,6 +9,7 @@ type I18nValue = {
   setLanguage: (language: Language) => void
   t: (key: keyof typeof messages['zh-TW']) => string
   cityLabel: (city: string | null | undefined) => string
+  districtLabel: (district: string | null | undefined) => string
   categoryLabel: (category: CategoryKey) => string
 }
 
@@ -90,6 +91,13 @@ const cities: Record<string, string> = {
   臺東縣: 'Taitung County', 澎湖縣: 'Penghu County', 金門縣: 'Kinmen County', 連江縣: 'Lienchiang County',
 }
 
+const districts: Record<string, string> = {
+  // Kaohsiung City
+  三民區: 'Sanmin Dist.', 仁武區: 'Renwu Dist.', 內門區: 'Neimen Dist.', 六龜區: 'Liugui Dist.', 前金區: 'Qianjin Dist.', 前鎮區: 'Qianzhen Dist.', 大寮區: 'Daliao Dist.', 大樹區: 'Dashu Dist.', 大社區: 'Dashe Dist.', 小港區: 'Xiaogang Dist.', 岡山區: 'Gangshan Dist.', 左營區: 'Zuoying Dist.', 林園區: 'Linyuan Dist.', 田寮區: 'Tianliao Dist.', 甲仙區: 'Jiaxian Dist.', 旗山區: 'Qishan Dist.', 旗津區: 'Qijin Dist.', 杉林區: 'Shanlin Dist.', 梓官區: 'Ziguan Dist.', 茂林區: 'Maolin Dist.', 桃源區: 'Taoyuan Dist.', 楠梓區: 'Nanzih Dist.', 湖內區: 'Hunei Dist.', 新興區: 'Xinxing Dist.', 鼓山區: 'Gushan Dist.', 路竹區: 'Luzhu Dist.', 鳥松區: 'Niaosong Dist.', 鳳山區: 'Fengshan Dist.', 橋頭區: 'Qiaotou Dist.', 燕巢區: 'Yanchao Dist.', 彌陀區: 'Mituo Dist.', 鹽埕區: 'Yancheng Dist.', 阿蓮區: 'Alian Dist.', 美濃區: 'Meinong Dist.', 苓雅區: 'Lingya Dist.', 茄萣區: 'Qieding Dist.', 永安區: 'Yongan Dist.', 那瑪夏區: 'Namaxia Dist.',
+  // Pingtung County
+  屏東市: 'Pingtung City', 潮州鎮: 'Chaozhou Township', 東港鎮: 'Donggang Township', 恆春鎮: 'Hengchun Township', 萬丹鄉: 'Wandan Township', 長治鄉: 'Changzhi Township', 麟洛鄉: 'Linluo Township', 九如鄉: 'Jiuru Township', 里港鄉: 'Ligang Township', 鹽埔鄉: 'Yanpu Township', 高樹鄉: 'Gaoshu Township', 萬巒鄉: 'Wanluan Township', 內埔鄉: 'Neipu Township', 竹田鄉: 'Zhutian Township', 新埤鄉: 'Xinpi Township', 枋寮鄉: 'Fangliao Township', 新園鄉: 'Xinyuan Township', 崁頂鄉: 'Kanding Township', 林邊鄉: 'Linbian Township', 南州鄉: 'Nanzhou Township', 佳冬鄉: 'Jiadong Township', 琉球鄉: 'Liuqiu Township', 車城鄉: 'Checheng Township', 滿州鄉: 'Manzhou Township', 枋山鄉: 'Fangshan Township', 三地門鄉: 'Sandimen Township', 霧臺鄉: 'Wutai Township', 瑪家鄉: 'Majia Township', 泰武鄉: 'Taiwu Township', 來義鄉: 'Laiyi Township', 春日鄉: 'Chunri Township', 獅子鄉: 'Shizi Township', 牡丹鄉: 'Mudan Township',
+}
+
 const I18nContext = createContext<I18nValue | null>(null)
 
 export function I18nProvider({ value, children }: { value: I18nValue; children: ReactNode }) {
@@ -103,6 +111,7 @@ export function createI18n(language: Language, setLanguage: (language: Language)
     setLanguage,
     t,
     cityLabel: (city) => language === 'en' && city ? (cities[city] ?? city) : city ?? '',
+    districtLabel: (district) => language === 'en' && district ? (districts[district] ?? district) : district ?? '',
     categoryLabel: (category) => t(category),
   }
 }

@@ -170,7 +170,7 @@ def create_app(
     async def nearby_summary_endpoint(
         lat: float,
         lng: float,
-        radius: int = Query(ge=1, le=3000),
+        radius: int = Query(ge=1, le=2000),
         repo: PlaceReadRepository = Depends(get_repository),
     ) -> NearbySummaryResponse:
         query: PlaceQuery = validate_place_query(lat=lat, lng=lng, radius=radius)

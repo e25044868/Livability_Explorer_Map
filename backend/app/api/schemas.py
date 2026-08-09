@@ -53,7 +53,7 @@ class CategoryResponse(BaseModel):
 
 
 class NearbySummaryResponse(BaseModel):
-    radius_meters: int = Field(gt=0, le=3000)
+    radius_meters: int = Field(gt=0, le=2000)
     summary: dict[str, int]
     data_version: str
 

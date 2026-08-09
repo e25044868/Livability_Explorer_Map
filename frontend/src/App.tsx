@@ -25,7 +25,7 @@ function sharedState() {
   const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => ['parking', 'toilet', 'aed', 'pharmacy', 'medical', 'motorcycle_charging', 'drinking_water', 'shelter', 'public_wifi', 'rescue_unit', 'police', 'library', 'public_bicycle'].includes(value))
   return {
     center: validTaiwanCenter ? { lat, lng } : INITIAL_CENTER,
-    radius: Number.isInteger(radius) && radius >= 500 && radius <= 3000 && radius % 100 === 0 ? radius : 1000,
+    radius: Number.isInteger(radius) && radius >= 100 && radius <= 2000 && radius % 100 === 0 ? radius : 100,
     categories: categories.length ? categories : ['parking', 'toilet', 'aed', 'drinking_water', 'shelter'] as CategoryKey[],
     city: params.get('city'),
   }
@@ -242,7 +242,7 @@ export default function App() {
   }
 
   const i18n = createI18n(language, setLanguage)
-  const { t, cityLabel } = i18n
+  const { t, cityLabel, districtLabel } = i18n
 
   return (
     <I18nProvider value={i18n}>
@@ -264,7 +264,7 @@ export default function App() {
       <div className="workspace">
         <AnalysisPanel center={center} radius={radius} queryMode={queryMode} places={places} loading={loading} dataVersion={dataVersion} onRadiusChange={(value) => { setRadius(value); setQueryMode('radius') }} onLocate={handleLocate} activeCategories={activeCategories} onToggleCategory={handleToggleCategory} city={cityFilter ?? detectedCity ?? '高雄市'} district={districtFilter} districts={districts} detectedCity={cityFilter ? null : detectedCity} onCityChange={handleCityChange} onDistrictChange={handleDistrictChange} onSearchSelect={handleSearchSelect} />
         <section className={`results-area ${viewMode}`}>
-          <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? districtFilter ? interpolate(t('districtData'), { city: cityLabel(cityFilter), district: districtFilter }) : interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
+          <div className="results-heading"><div><p className="eyebrow">{t('resultsHint')}</p><h1>{queryMode === 'radius' ? interpolate(t('withinRadius'), { radius: formatRadius(radius, language) }) : queryMode === 'city' ? districtFilter ? interpolate(t('districtData'), { city: cityLabel(cityFilter), district: districtLabel(districtFilter) }) : interpolate(t('cityData'), { city: cityLabel(cityFilter) }) : t('currentMapArea')}</h1></div><span>{loading ? t('updating') : `${filteredPlaces.length} ${t('matchingResults')}`}</span></div>
           <FilterBar filters={filters} onChange={setFilters} sortMode={sortMode} onSortChange={setSortMode} intersectionReady={activeCategories.includes('parking') && activeCategories.includes('toilet')} intersectionCount={intersectionCount} />
           <div className="map-view"><MapView center={center} radius={radius} queryMode={queryMode} places={filteredPlaces} selectedPlace={selectedPlace} loading={loading} showSearchArea={showSearchArea} onBoundsChange={handleBoundsChange} onSearchArea={handleSearchArea} onSelect={selectPlace} onSetCenter={handleSetCenter} /></div>
           <div className="list-view"><PlaceList places={filteredPlaces} selectedId={selectedPlace?.public_id ?? null} loading={loading} error={error} onSelect={(place) => { selectPlace(place); if (window.innerWidth < 760) setViewMode('map') }} favoriteIds={favoriteIds} /></div>

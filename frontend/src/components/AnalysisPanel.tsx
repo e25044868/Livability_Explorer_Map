@@ -41,7 +41,7 @@ const categoryOptions: { key: CategoryKey; symbol: string; available: boolean }[
   { key: 'motorcycle_charging', symbol: '⚡', available: false },
 ]
 
-const radii = [500, 1000, 3000]
+const radii = [100, 1000, 2000]
 
 export function AnalysisPanel({
   center,
@@ -62,7 +62,7 @@ export function AnalysisPanel({
   onDistrictChange,
   onSearchSelect,
 }: Props) {
-  const { language, t, categoryLabel } = useI18n()
+  const { language, t, categoryLabel, cityLabel, districtLabel } = useI18n()
   const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false)
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
   const sheetTouchStart = useRef<number | null>(null)
@@ -101,7 +101,7 @@ export function AnalysisPanel({
         <p className="eyebrow">{t('analysisCenter')}</p>
         <div className="location-row">
           <div>
-            <strong>{district ? `${city} · ${district}` : city}</strong>
+            <strong>{district ? `${cityLabel(city)} · ${districtLabel(district)}` : cityLabel(city)}</strong>
             <span>{center.lat.toFixed(4)}, {center.lng.toFixed(4)}</span>
           </div>
           <button className="icon-button" onClick={onLocate} title={t('useLocation')} aria-label={t('useLocation')}>
@@ -139,11 +139,11 @@ export function AnalysisPanel({
           <span className="sr-only">{t('adjustRadius')}</span>
           <input
             type="range"
-            min="500"
-            max="3000"
+            min="100"
+            max="2000"
             step="100"
             value={radius}
-            style={{ '--radius-progress': `${((radius - 500) / 2500) * 100}%` } as CSSProperties}
+            style={{ '--radius-progress': `${((radius - 100) / 1900) * 100}%` } as CSSProperties}
             onChange={(event) => onRadiusChange(Number(event.target.value))}
             aria-valuetext={formatRadius(radius, language)}
           />

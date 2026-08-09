@@ -6,7 +6,7 @@ from typing import cast
 from fastapi import HTTPException
 
 MAX_VIEWPORT_SPAN_DEGREES = 0.5
-MAX_RADIUS_METERS = 3000
+MAX_RADIUS_METERS = 2000
 
 
 @dataclass(frozen=True, slots=True)
