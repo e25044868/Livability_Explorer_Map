@@ -71,8 +71,8 @@ export async function fetchDistricts(city: string, signal?: AbortSignal) {
   return (await response.json()) as string[]
 }
 
-export function searchPlaces(keyword: string, signal?: AbortSignal) {
-  const params = new URLSearchParams({ keyword, limit: '30' })
+export function searchPlaces(keyword: string, categories: CategoryKey[], signal?: AbortSignal) {
+  const params = new URLSearchParams({ keyword, categories: categories.join(','), limit: '30' })
   const response = fetch(`${API_BASE}/api/search?${params}`, { signal })
   return response.then(async (result) => {
     if (!result.ok) throw new Error((await result.json().catch(() => null))?.message ?? '搜尋失敗')

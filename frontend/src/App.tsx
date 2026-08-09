@@ -13,6 +13,7 @@ import type { CategoryKey, Coordinates, Place, PlaceFilters, QueryMode, SortMode
 
 const INITIAL_CENTER: Coordinates = { lat: 22.6273, lng: 120.3014 }
 const DEFAULT_FILTERS: PlaceFilters = { minCarSpaces: 0, minMotorcycleSpaces: 0, accessibleOnly: false, favoritesOnly: false, open24hOnly: false, evOnly: false, parentChildOnly: false, recentOnly: false }
+const VISIBLE_CATEGORIES: CategoryKey[] = ['parking', 'toilet', 'aed', 'drinking_water', 'shelter', 'public_wifi']
 type Theme = 'light' | 'dark'
 
 function sharedState() {
@@ -22,11 +23,11 @@ function sharedState() {
   const lng = lngValue == null ? Number.NaN : Number(lngValue)
   const radius = radiusValue == null ? Number.NaN : Number(radiusValue)
   const validTaiwanCenter = Number.isFinite(lat) && Number.isFinite(lng) && lat >= 20 && lat <= 27 && lng >= 118 && lng <= 123
-  const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => ['parking', 'toilet', 'aed', 'pharmacy', 'medical', 'motorcycle_charging', 'drinking_water', 'shelter', 'public_wifi', 'rescue_unit', 'police', 'library', 'public_bicycle'].includes(value))
+  const categories = (params.get('categories') ?? '').split(',').filter((value): value is CategoryKey => VISIBLE_CATEGORIES.includes(value as CategoryKey))
   return {
     center: validTaiwanCenter ? { lat, lng } : INITIAL_CENTER,
     radius: Number.isInteger(radius) && radius >= 100 && radius <= 2000 && radius % 100 === 0 ? radius : 100,
-    categories: categories.length ? categories : ['parking', 'toilet', 'aed', 'drinking_water', 'shelter'] as CategoryKey[],
+    categories: categories.length ? categories : VISIBLE_CATEGORIES,
     city: params.get('city'),
   }
 }

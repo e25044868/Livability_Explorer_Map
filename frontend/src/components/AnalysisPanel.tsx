@@ -25,20 +25,13 @@ type Props = {
   onSearchSelect: (place: Place) => void
 }
 
-const categoryOptions: { key: CategoryKey; symbol: string; available: boolean }[] = [
-  { key: 'parking', symbol: 'P', available: true },
-  { key: 'toilet', symbol: 'WC', available: true },
-  { key: 'aed', symbol: 'AED', available: true },
-  { key: 'drinking_water', symbol: '水', available: true },
-  { key: 'shelter', symbol: '安', available: true },
-  { key: 'public_wifi', symbol: 'WiFi', available: true },
-  { key: 'rescue_unit', symbol: '119', available: true },
-  { key: 'police', symbol: '警', available: true },
-  { key: 'library', symbol: '書', available: true },
-  { key: 'public_bicycle', symbol: '車', available: true },
-  { key: 'pharmacy', symbol: '藥', available: false },
-  { key: 'medical', symbol: '醫', available: false },
-  { key: 'motorcycle_charging', symbol: '⚡', available: false },
+const categoryOptions: { key: CategoryKey; symbol: string }[] = [
+  { key: 'parking', symbol: 'P' },
+  { key: 'toilet', symbol: 'WC' },
+  { key: 'aed', symbol: 'AED' },
+  { key: 'drinking_water', symbol: '水' },
+  { key: 'shelter', symbol: '安' },
+  { key: 'public_wifi', symbol: 'WiFi' },
 ]
 
 const radii = [100, 1000, 2000]
@@ -112,7 +105,7 @@ export function AnalysisPanel({
 
       <section className="panel-section search-section">
         <p className="eyebrow">{t('searchAndBrowse')}</p>
-        <div className="panel-search"><SearchBar onSelect={onSearchSelect} /></div>
+        <div className="panel-search"><SearchBar onSelect={onSearchSelect} categories={activeCategories} /></div>
         <CitySelector value={city} district={district} districts={districts} detectedCity={detectedCity} onChange={onCityChange} onDistrictChange={onDistrictChange} />
       </section>
 
@@ -163,17 +156,15 @@ export function AnalysisPanel({
               <button
                 key={option.key}
                 className={`category-card category-${option.key} ${active ? 'active' : ''}`}
-                disabled={!option.available}
                 onClick={() => onToggleCategory(option.key)}
               >
                 <span className="category-icon">{option.symbol}</span>
-                <span><strong>{categoryLabel(option.key)}</strong><small>{option.available ? t('openData') : t('pendingGeocode')}</small></span>
-                <span className="category-count">{option.available ? (loading ? '—' : count) : '—'}</span>
+                <span><strong>{categoryLabel(option.key)}</strong><small>{t('openData')}</small></span>
+                <span className="category-count">{loading ? '—' : count}</span>
               </button>
             )
           })}
         </div>
-        <div className="coming-soon">{t('noVerifiedCoordinates')}</div>
       </section>
 
       <section className="panel-section summary-section">

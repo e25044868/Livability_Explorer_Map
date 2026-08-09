@@ -12,10 +12,6 @@ const sources = [
   { key: 'waterSource', href: 'https://data.gov.tw/dataset/177893' },
   { key: 'shelterSource', href: 'https://data.gov.tw/dataset/73242' },
   { key: 'wifiSource', href: 'https://data.gov.tw/dataset/5962' },
-  { key: 'rescueSource', href: 'https://data.gov.tw/dataset/5969' },
-  { key: 'policeSource', href: 'https://data.gov.tw/dataset/5958' },
-  { key: 'librarySource', href: 'https://data.gov.tw/dataset/99567' },
-  { key: 'publicBicycleSource', href: 'https://tdx.transportdata.tw/api-service/swagger' },
 ] as const
 
 export function AboutDialog({ onClose }: Props) {

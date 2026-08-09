@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { geocodeLandmarks, searchPlaces } from '../api'
-import type { Place } from '../types'
+import type { CategoryKey, Place } from '../types'
 import { useI18n } from '../i18n'
 
-export function SearchBar({ onSelect }: { onSelect: (place: Place) => void }) {
+export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) => void; categories: CategoryKey[] }) {
   const { t } = useI18n()
   const [keyword, setKeyword] = useState('')
   const [results, setResults] = useState<Place[]>([])
@@ -20,7 +20,7 @@ export function SearchBar({ onSelect }: { onSelect: (place: Place) => void }) {
       setLoading(true)
       try {
         const [response, landmarks] = await Promise.all([
-          searchPlaces(keyword.trim(), controller.signal), geocodeLandmarks(keyword.trim(), controller.signal),
+          searchPlaces(keyword.trim(), categories, controller.signal), geocodeLandmarks(keyword.trim(), controller.signal),
         ])
         const external: Place[] = landmarks.map((item, index) => ({
           public_id: `geocode-${index}-${item.latitude}-${item.longitude}`, name: item.name,
@@ -37,7 +37,7 @@ export function SearchBar({ onSelect }: { onSelect: (place: Place) => void }) {
       }
     }, 350)
     return () => { window.clearTimeout(timer); controller.abort() }
-  }, [keyword])
+  }, [categories, keyword])
 
   return (
     <div className="search-box">
