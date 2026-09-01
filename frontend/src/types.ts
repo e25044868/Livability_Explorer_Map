@@ -60,9 +60,14 @@ export type ParkingProperties = {
   available_rent_bikes?: number
   available_return_bikes?: number
   bike_sharing_type?: string
+  facility_subtype?: string
+  management_office?: string
+  facility_status?: string
+  facility_description?: string
+  landscape_area?: string
 }
 
-export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter' | 'public_wifi' | 'rescue_unit' | 'police' | 'library' | 'public_bicycle'
+export type CategoryKey = 'parking' | 'toilet' | 'aed' | 'pharmacy' | 'medical' | 'motorcycle_charging' | 'drinking_water' | 'shelter' | 'public_wifi' | 'rescue_unit' | 'police' | 'library' | 'public_bicycle' | 'tourism_facility'
 
 export type Place = {
   public_id: string

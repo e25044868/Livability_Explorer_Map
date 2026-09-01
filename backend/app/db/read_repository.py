@@ -67,7 +67,24 @@ PUBLIC_PROPERTY_KEYS: dict[str, set[str]] = {
     "rescue_unit": {"co_located_with_fire_station"},
     "police": {"english_name", "unit_type"},
     "library": {"website"},
-    "public_bicycle": {"station_capacity", "available_rent_bikes", "available_return_bikes", "service_status", "live_updated_at", "bike_sharing_type"},
+    "public_bicycle": {
+        "station_capacity",
+        "available_rent_bikes",
+        "available_return_bikes",
+        "service_status",
+        "live_updated_at",
+        "bike_sharing_type",
+    },
+    "tourism_facility": {
+        "facility_type",
+        "facility_subtype",
+        "management_office",
+        "facility_status",
+        "facility_description",
+        "landscape_area",
+        "accessible",
+        "parent_child",
+    },
 }
 
 

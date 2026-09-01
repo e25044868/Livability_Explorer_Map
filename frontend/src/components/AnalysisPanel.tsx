@@ -32,6 +32,7 @@ const categoryOptions: { key: CategoryKey; symbol: string }[] = [
   { key: 'drinking_water', symbol: '水' },
   { key: 'shelter', symbol: '安' },
   { key: 'public_wifi', symbol: 'WiFi' },
+  { key: 'tourism_facility', symbol: '景' },
 ]
 
 const radii = [100, 1000, 2000]

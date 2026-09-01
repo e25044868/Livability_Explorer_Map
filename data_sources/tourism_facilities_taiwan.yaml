@@ -1,0 +1,18 @@
+dataset_key: tourism_facilities_taiwan
+dataset_id: "113960"
+name: 風景區民眾關心公共設施（精選）
+category: tourism_facility
+source_agency: 交通部觀光署
+metadata_url: https://data.gov.tw/dataset/113960
+download:
+  url: https://gis.tad.gov.tw/TTF/web_api/getJsonFile.jsp
+  allowed_hosts:
+    - gis.tad.gov.tw
+  format: json
+  encoding: utf-8-sig
+  timeout_seconds: 60
+  max_bytes: 30000000
+quality_gates:
+  minimum_records: 300
+  maximum_invalid_coordinate_ratio: 0.10
+  maximum_record_count_change_ratio: 0.50

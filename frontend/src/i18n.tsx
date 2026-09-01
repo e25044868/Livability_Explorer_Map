@@ -15,7 +15,7 @@ type I18nValue = {
 
 const messages = {
   'zh-TW': {
-    appName: '生活機能探索地圖', search: '搜尋', map: '地圖', list: '清單', share: '分享', about: '關於',
+    appName: '生活機能探索地圖', search: '搜尋', map: '地圖', list: '清單', share: '分享', home: '回首頁', about: '關於', platformAbout: '關於平台', menu: '選單',
     city: '縣市', district: '行政區', allDistricts: '所有行政區', selectCity: '選擇縣市', selectDistrict: '選擇行政區', detected: '定位：', analysisCenter: '分析中心', searchAndBrowse: '搜尋與區域瀏覽',
     kaohsiungCenter: '高雄市中心', useLocation: '使用目前位置', exploreRange: '探索範圍',
     centerRadius: '中心點半徑', cityBrowse: '縣市瀏覽', mapArea: '目前地圖區域', areaSearch: '區域搜尋',
@@ -45,11 +45,11 @@ const messages = {
     aboutIntro: '本平台將具備可信座標的公共設施整合到同一張地圖，協助你依地點、距離與需求快速探索生活機能。',
     officialSources: '官方資料來源', parkingSource: '交通部 TDX：路外停車場資料', toiletSource: '環境部環境管理署：全國公廁建檔資料',
     aedSource: '衛生福利部醫事司：全國公共場所 AED 位置資訊', waterSource: '環境部氣候變遷署：Cool map 涼適點－飲水機',
-    shelterSource: '內政部消防署：避難收容處所點位檔', wifiSource: '數位發展部：iTaiwan 公共區域免費無線上網熱點', rescueSource: '內政部消防署：消防／救援據點位置', policeSource: '內政部警政署：警察機關地址與座標資料', librarySource: '國立公共資訊圖書館：公共圖書館基本資料', publicBicycleSource: '交通部 TDX：公共自行車站點與即時車位資料', aboutNote: '資料會依各官方來源的公開更新情況整理發布；平台僅呈現具可信座標的項目，實際服務狀態請以主管機關公告為準。',
-    parking: '路外停車場', toilet: '公共廁所', aed: 'AED', drinking_water: '公共飲水機', shelter: '避難收容處所', public_wifi: '公共免費 Wi-Fi', rescue_unit: '消防／救援據點', police: '警察機關／派出所', library: '公共圖書館', public_bicycle: '公共自行車站', pharmacy: '藥局', medical: '醫療院所', motorcycle_charging: '機車充電',
+    shelterSource: '內政部消防署：避難收容處所點位檔', wifiSource: '數位發展部：iTaiwan 公共區域免費無線上網熱點', rescueSource: '內政部消防署：消防／救援據點位置', policeSource: '內政部警政署：警察機關地址與座標資料', librarySource: '國立公共資訊圖書館：公共圖書館基本資料', publicBicycleSource: '交通部 TDX：公共自行車站點與即時車位資料', tourismFacilitySource: '交通部觀光署：風景區民眾關心公共設施', aboutNote: '資料會依各官方來源的公開更新情況整理發布；平台僅呈現具可信座標的項目，實際服務狀態請以主管機關公告為準。',
+    nationalTourismFacility: '交通部觀光署風景區公共設施資料', parking: '路外停車場', toilet: '公共廁所', aed: 'AED', drinking_water: '公共飲水機', shelter: '避難收容處所', public_wifi: '公共免費 Wi-Fi', rescue_unit: '消防／救援據點', police: '警察機關／派出所', library: '公共圖書館', public_bicycle: '公共自行車站', tourism_facility: '風景區友善設施', pharmacy: '藥局', medical: '醫療院所', motorcycle_charging: '機車充電',
   },
   en: {
-    appName: 'Livability Explorer Map', search: 'Search', map: 'Map', list: 'List', share: 'Share', about: 'About',
+    appName: 'Livability Explorer Map', search: 'Search', map: 'Map', list: 'List', share: 'Share', home: 'Home', about: 'About', platformAbout: 'About platform', menu: 'Menu',
     city: 'City', district: 'District', allDistricts: 'All districts', selectCity: 'Select city', selectDistrict: 'Select district', detected: 'Located: ', analysisCenter: 'ANALYSIS CENTER', searchAndBrowse: 'SEARCH & AREA BROWSE',
     kaohsiungCenter: 'Kaohsiung City Center', useLocation: 'Use current location', exploreRange: 'SEARCH RANGE',
     centerRadius: 'Radius from center', cityBrowse: 'Browse by city', mapArea: 'Current map area', areaSearch: 'Area search',
@@ -79,8 +79,8 @@ const messages = {
     aboutIntro: 'This map brings public facilities with verified coordinates into one place, helping you explore nearby everyday services by location, distance, and needs.',
     officialSources: 'Official data sources', parkingSource: 'MOTC TDX: Off-street parking data', toiletSource: 'MOENV Environmental Management Administration: National public restroom registry',
     aedSource: 'MOHW Department of Medical Affairs: National public AED locations', waterSource: 'MOENV Climate Change Administration: Cool Map drinking water points',
-    shelterSource: 'National Fire Agency: Emergency shelter locations', wifiSource: 'MODA: iTaiwan public free Wi-Fi hotspots', rescueSource: 'National Fire Agency: Fire and rescue unit locations', policeSource: 'National Police Agency: Police facility addresses and coordinates', librarySource: 'National Library of Public Information: Public library basic data', publicBicycleSource: 'MOTC TDX: Public bicycle stations and live availability', aboutNote: 'Data is organised according to each official source’s public updates. Only records with verified coordinates are plotted; always confirm service status with the responsible authority.',
-    parking: 'Off-street parking', toilet: 'Public restroom', aed: 'AED', drinking_water: 'Drinking water', shelter: 'Emergency shelter', public_wifi: 'Free public Wi-Fi', rescue_unit: 'Fire and rescue unit', police: 'Police station', library: 'Public library', public_bicycle: 'Public bicycle station', pharmacy: 'Pharmacy', medical: 'Medical facility', motorcycle_charging: 'Motorcycle charging',
+    shelterSource: 'National Fire Agency: Emergency shelter locations', wifiSource: 'MODA: iTaiwan public free Wi-Fi hotspots', rescueSource: 'National Fire Agency: Fire and rescue unit locations', policeSource: 'National Police Agency: Police facility addresses and coordinates', librarySource: 'National Library of Public Information: Public library basic data', publicBicycleSource: 'MOTC TDX: Public bicycle stations and live availability', tourismFacilitySource: 'Tourism Administration: Visitor-focused scenic-area facilities', aboutNote: 'Data is organised according to each official source’s public updates. Only records with verified coordinates are plotted; always confirm service status with the responsible authority.',
+    nationalTourismFacility: 'Tourism Administration scenic-area facility data', parking: 'Off-street parking', toilet: 'Public restroom', aed: 'AED', drinking_water: 'Drinking water', shelter: 'Emergency shelter', public_wifi: 'Free public Wi-Fi', rescue_unit: 'Fire and rescue unit', police: 'Police station', library: 'Public library', public_bicycle: 'Public bicycle station', tourism_facility: 'Scenic-area friendly facilities', pharmacy: 'Pharmacy', medical: 'Medical facility', motorcycle_charging: 'Motorcycle charging',
   },
 } as const
 

@@ -177,3 +177,61 @@ def normalize_libraries(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft
                 )
             )
     return places
+
+
+_TOURISM_FACILITY_TYPES = {
+    "遊客中心", "哺集乳室", "無障礙設施", "無障礙坡道", "急救箱", "急救箱、AED", "穆斯林禱告室",
+}
+
+
+def normalize_tourism_facilities(rows: Iterable[Mapping[str, object]]) -> list[PlaceDraft]:
+    """Keep only visitor-facing facilities published with official WGS84 coordinates."""
+    places: list[PlaceDraft] = []
+    for row in rows:
+        facility_type = _text(row.get("設施大類"))
+        facility_subtype = _text(row.get("設施小類"))
+        # The official major category is broad (for example, "basic public
+        # services").  The user-facing facility designation is the subtype.
+        if facility_subtype not in _TOURISM_FACILITY_TYPES:
+            continue
+        name = _text(row.get("設施名稱")) or facility_subtype
+        address = _text(row.get("據點位置"))
+        manager_address = _text(row.get("管理者聯絡地址"))
+        city, district = _city_district(address or manager_address)
+        coordinate = validate_wgs84(row.get("設施坐標Y"), row.get("設施坐標X"))
+        places.append(
+            PlaceDraft(
+                external_id=_text(row.get("設施編號"))
+                or _id(
+                    "tourism-facility-",
+                    facility_subtype,
+                    name,
+                    row.get("設施坐標X"),
+                    row.get("設施坐標Y"),
+                ),
+                name=name,
+                category=PlaceCategory.TOURISM_FACILITY,
+                subcategory=facility_subtype,
+                address=address,
+                city=city,
+                district=district,
+                latitude=coordinate.latitude,
+                longitude=coordinate.longitude,
+                location_accuracy=coordinate.accuracy,
+                phone=_text(row.get("管理者連絡電話")),
+                source_dataset="風景區民眾關心公共設施",
+                source_agency="交通部觀光署",
+                properties={
+                    "facility_type": facility_type,
+                    "facility_subtype": facility_subtype,
+                    "management_office": _text(row.get("管理處")),
+                    "facility_status": _text(row.get("設施狀態")),
+                    "facility_description": _text(row.get("設施說明")),
+                    "landscape_area": _text(row.get("景觀分區")),
+                    "manager_address": manager_address,
+                    "accessible": facility_subtype in {"無障礙設施", "無障礙坡道"},
+                    "parent_child": facility_subtype == "哺集乳室",
+                },
+            )
+        )
+    return places

@@ -19,6 +19,7 @@ class PlaceCategory(StrEnum):
     POLICE = "police"
     LIBRARY = "library"
     PUBLIC_BICYCLE = "public_bicycle"
+    TOURISM_FACILITY = "tourism_facility"
 
 
 class LocationAccuracy(StrEnum):

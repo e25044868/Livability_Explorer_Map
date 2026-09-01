@@ -57,6 +57,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .theme-toggle:hover { background: var(--mint); }
 .share-button, .language-toggle, .about-button { padding: 8px 11px; color: var(--green-dark); background: var(--paper); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 700; }
 .language-toggle { min-width: 42px; }
+.top-menu-wrap { position: relative; }.top-menu-trigger { width: 38px; height: 38px; display: grid; place-items: center; color: var(--green-dark); background: var(--paper); border: 1px solid var(--line); border-radius: 11px; cursor: pointer; box-shadow: 0 2px 8px var(--shadow); }.top-menu-trigger:hover { background: var(--mint); }.top-menu-panel { position: absolute; z-index: 1000; top: calc(100% + 8px); right: 0; display: grid; min-width: 148px; padding: 6px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 28px var(--shadow); }.top-menu-panel a,.top-menu-panel button { padding: 10px 11px; color: var(--green-dark); background: transparent; border: 0; border-radius: 8px; font: inherit; font-size: 12px; font-weight: 700; text-align: left; text-decoration: none; white-space: nowrap; cursor: pointer; }.top-menu-panel a:hover,.top-menu-panel button:hover { background: var(--mint); }
 .city-selector { display: flex; align-items: center; gap: 5px; padding: 6px 8px; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); border-radius: 10px; font-size: 10px; }
 .city-selector select { max-width: 82px; color: var(--ink); background: transparent; border: 0; outline: 0; font-size: 12px; font-weight: 600; }
 .city-selector small { display: none; }
@@ -110,6 +111,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-police .category-icon { background: #566fa8; }
 .category-library .category-icon { background: #7657a8; }
 .category-public_bicycle .category-icon { background: #3e9d6c; }
+.category-tourism_facility .category-icon { background: #7c8d32; }
 .category-pharmacy .category-icon { background: #8b62b3; }
 .category-medical .category-icon { background: #d77a4c; }
 .category-motorcycle_charging .category-icon { background: #7252b8; }
@@ -123,6 +125,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-police.active { border-color: #566fa8; background: color-mix(in srgb, #566fa8 11%, var(--paper)); }
 .category-library.active { border-color: #7657a8; background: color-mix(in srgb, #7657a8 11%, var(--paper)); }
 .category-public_bicycle.active { border-color: #3e9d6c; background: color-mix(in srgb, #3e9d6c 11%, var(--paper)); }
+.category-tourism_facility.active { border-color: #7c8d32; background: color-mix(in srgb, #7c8d32 11%, var(--paper)); }
 .category-parking .category-count { color: #267e74; background: color-mix(in srgb, #2f9d8f 18%, var(--paper)); }
 .category-toilet .category-count { color: #42678f; background: color-mix(in srgb, #4d78a8 18%, var(--paper)); }
 .category-aed .category-count { color: #a74040; background: color-mix(in srgb, #c44f4f 18%, var(--paper)); }
@@ -133,6 +136,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .category-police .category-count { color: #465c8e; background: color-mix(in srgb, #566fa8 18%, var(--paper)); }
 .category-library .category-count { color: #64438e; background: color-mix(in srgb, #7657a8 18%, var(--paper)); }
 .category-public_bicycle .category-count { color: #28734b; background: color-mix(in srgb, #3e9d6c 18%, var(--paper)); }
+.category-tourism_facility .category-count { color: #5d6c1d; background: color-mix(in srgb, #7c8d32 18%, var(--paper)); }
 .category-card > span:nth-child(2) { display: flex; flex-direction: column; gap: 3px; }
 .category-card strong { font-size: 15px; }
 .category-card small { color: var(--muted); font-size: 11px; }
@@ -182,6 +186,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .facility-marker-wrap.police span { width: 34px; background: #566fa8; box-shadow: 0 4px 10px rgba(50,60,110,.3); font-size: 12px; }
 .facility-marker-wrap.library span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #7657a8; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(70,45,105,.3); font-size: 12px; font-weight: 800; }
 .facility-marker-wrap.public-bicycle span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #3e9d6c; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(30,100,65,.3); font-size: 12px; font-weight: 800; }
+.facility-marker-wrap.tourism-facility span { width: 34px; height: 34px; display: grid; place-items: center; color: white; background: #7c8d32; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 10px rgba(70,85,20,.3); font-size: 12px; font-weight: 800; }
 .cluster-marker span { width: 42px; height: 42px; display: grid; place-items: center; color: white; background: var(--green); border: 4px solid color-mix(in srgb, white 78%, var(--green)); border-radius: 50%; box-shadow: 0 4px 12px rgba(16,62,55,.35); font-size: 12px; font-weight: 800; }
 .analysis-center-marker span { width: 22px; height: 22px; display: block; background: var(--orange); border: 5px solid white; border-radius: 50%; box-shadow: 0 0 0 4px rgba(233,134,85,.32), 0 3px 10px rgba(0,0,0,.28); }
 .map-popup { min-width: 190px; display: flex; flex-direction: column; gap: 6px; color: var(--ink); font-family: 'Noto Sans TC', sans-serif; }
@@ -205,6 +210,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .place-rank.rescue_unit { color: #ffe8e0; background: #b24a37; }
 .place-rank.police { color: #e9edff; background: #566fa8; }
 .place-rank.public_bicycle { color: #e5fff0; background: #3e9d6c; }
+.place-rank.tourism_facility { color: #f1f8d8; background: #7c8d32; }
 .place-card-main { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
 .place-title-row { display: flex; justify-content: space-between; gap: 8px; }
 .place-title-row strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
@@ -228,6 +234,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
 .detail-category.police { background: #566fa8; }
 .detail-category.library { background: #7657a8; }
 .detail-category.public_bicycle { background: #3e9d6c; }
+.detail-category.tourism_facility { background: #7c8d32; }
 .favorite-button,.drawer-close { width: 34px; height: 34px; display: grid; place-items: center; color: var(--muted); background: var(--soft); border: 0; border-radius: 9px; cursor: pointer; font-size: 20px; }.favorite-button.active { color: #e6a53d; }
 .detail-drawer .eyebrow { margin-top: 18px; }.detail-drawer h2 { margin: 0; font-size: 20px; }.detail-address { color: var(--muted); font-size: 12px; line-height: 1.6; }.detail-phone { color: var(--green); font-size: 12px; }
 .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 18px 0; }.detail-grid div { padding: 10px; background: var(--soft); border-radius: 10px; }.detail-grid dt { color: var(--muted); font-size: 9px; }.detail-grid dd { margin: 4px 0 0; font-size: 11px; line-height: 1.5; }
@@ -267,6 +274,7 @@ button:focus-visible { outline: 3px solid rgba(21,109,98,.28); outline-offset: 2
   .brand strong { max-width: 118px; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
   .brand span { display: none; }
   .topbar-actions { gap: 5px; }
+  .top-menu-panel { right: 0; max-width: calc(100vw - 24px); }
   .share-button, .about-button { display: none; }
   .view-switch { gap: 1px; padding: 3px; }
   .view-switch button { width: 34px; padding: 7px; font-size: 0; }

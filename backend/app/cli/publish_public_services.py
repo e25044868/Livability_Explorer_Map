@@ -14,10 +14,11 @@ from sqlalchemy.pool import NullPool
 
 from app.db.publisher import SqlAlchemyImportPublisher
 from app.importers.public_services import (
+    normalize_libraries,
     normalize_police,
     normalize_public_wifi,
     normalize_rescue_units,
-    normalize_libraries,
+    normalize_tourism_facilities,
 )
 from app.importers.quality import evaluate_quality
 from app.importers.snapshots import FileRawSnapshotStore
@@ -70,6 +71,15 @@ def _normalise(config: SourceConfig, content: bytes) -> tuple[bytes, list]:
         if not isinstance(rows, list):
             raise ValueError("公共圖書館 JSON 缺少縣市資料陣列")
         return json.dumps({"data": rows}, ensure_ascii=False).encode(), normalize_libraries(rows)
+    if config.category == "tourism_facility":
+        rows = json.loads(content.decode(config.download.encoding))
+        if not isinstance(rows, list):
+            raise ValueError("風景區公共設施 JSON 缺少資料陣列")
+        required = {"設施編號", "設施大類", "設施坐標X", "設施坐標Y"}
+        if not rows or not required.issubset(rows[0]):
+            raise ValueError("風景區公共設施 JSON 缺少必要欄位")
+        snapshot_content = json.dumps({"data": rows}, ensure_ascii=False).encode()
+        return snapshot_content, normalize_tourism_facilities(rows)
     raise ValueError(f"未支援的類別：{config.category}")
 
 
@@ -87,6 +97,7 @@ async def main_async(snapshot_root: Path | None = None) -> list[dict[str, object
             PROJECT_ROOT / "data_sources" / "rescue_units_taiwan.yaml",
             PROJECT_ROOT / "data_sources" / "police_taiwan.yaml",
             PROJECT_ROOT / "data_sources" / "libraries_taiwan.yaml",
+            PROJECT_ROOT / "data_sources" / "tourism_facilities_taiwan.yaml",
         ):
             config = load_source_config(source_path)
             downloaded = await download_source(config)

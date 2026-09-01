@@ -5,7 +5,7 @@ import { AboutDialog } from './components/AboutDialog'
 import { DetailDrawer } from './components/DetailDrawer'
 import { CITY_CENTERS } from './components/CitySelector'
 import { FilterBar } from './components/FilterBar'
-import { ListIcon, MapPinIcon, MoonIcon, SunIcon } from './components/Icons'
+import { ListIcon, MapPinIcon, MenuIcon, MoonIcon, SunIcon } from './components/Icons'
 import { MapView } from './components/MapView'
 import { PlaceList } from './components/PlaceList'
 import { createI18n, I18nProvider, interpolate, type Language } from './i18n'
@@ -77,6 +77,7 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
   const [language, setLanguage] = useState<Language>(getInitialLanguage)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -256,7 +257,13 @@ export default function App() {
             <button className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')} aria-label={t('map')}><MapPinIcon size={17}/>{t('map')}</button>
             <button className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')} aria-label={t('list')}><ListIcon size={17}/>{t('list')}</button>
           </nav>
-          <button className="about-button" onClick={() => setAboutOpen(true)}>{t('about')}</button>
+          <div className="top-menu-wrap">
+            <button className="top-menu-trigger" onClick={() => setMenuOpen((open) => !open)} aria-label={t('menu')} aria-expanded={menuOpen}><MenuIcon size={19} /></button>
+            {menuOpen && <div className="top-menu-panel">
+              <a href="https://taiwan-convenience-map.onrender.com/">{t('home')}</a>
+              <button onClick={() => { setAboutOpen(true); setMenuOpen(false) }}>{t('platformAbout')}</button>
+            </div>}
+          </div>
           <button className="language-toggle" onClick={() => setLanguage((current) => current === 'zh-TW' ? 'en' : 'zh-TW')} aria-label={language === 'zh-TW' ? 'Switch to English' : '切換為中文'}>{language === 'zh-TW' ? 'EN' : '中文'}</button>
           <button className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={interpolate(t('switchTheme'), { theme: theme === 'light' ? t('darkTheme') : t('lightTheme') })}>{theme === 'light' ? <MoonIcon /> : <SunIcon />}</button>
         </div>

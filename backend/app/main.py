@@ -39,6 +39,9 @@ CATEGORY_LABELS = {
     PlaceCategory.PUBLIC_WIFI: "公共免費 Wi-Fi",
     PlaceCategory.RESCUE_UNIT: "消防／救援據點",
     PlaceCategory.POLICE: "警察機關／派出所",
+    PlaceCategory.LIBRARY: "公共圖書館",
+    PlaceCategory.PUBLIC_BICYCLE: "公共自行車站",
+    PlaceCategory.TOURISM_FACILITY: "風景區友善設施",
 }
 
 

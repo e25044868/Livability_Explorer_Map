@@ -12,6 +12,7 @@ const sources = [
   { key: 'waterSource', href: 'https://data.gov.tw/dataset/177893' },
   { key: 'shelterSource', href: 'https://data.gov.tw/dataset/73242' },
   { key: 'wifiSource', href: 'https://data.gov.tw/dataset/5962' },
+  { key: 'tourismFacilitySource', href: 'https://data.gov.tw/dataset/113960' },
 ] as const
 
 export function AboutDialog({ onClose }: Props) {

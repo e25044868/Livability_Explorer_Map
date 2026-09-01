@@ -147,7 +147,7 @@ python -m app.cli.validate_parking_source
 - 飲水機使用環境部 `GIS_P_82` 涼適點資料，只發布 `waterdispenser=1` 且通過座標檢查的點位。
 - 避難收容處所使用消防署全國點位檔，公開容量、適用災害、室內外與弱者安置資訊。
 - 重新發布：`python -m app.cli.publish_amenities`。
-- 公共免費 Wi-Fi、消防／救援據點及警察機關使用全國官方資料；重新發布：`python -m app.cli.publish_public_services`。
+- 公共免費 Wi-Fi、消防／救援據點、警察機關、公共圖書館及精選風景區友善設施使用官方資料；重新發布：`python -m app.cli.publish_public_services`。
 - 最簡單的本機發布方式是執行 `./publish_public_services.ps1`；腳本會安全提示輸入 Session Pooler URI，僅保留在目前 PowerShell 工作階段，完成後即清除。
 - 警察座標會從官方 TWD97 TM2（EPSG:3826）轉為 WGS84，未通過驗證的紀錄不會繪製在地圖。
 - 公共自行車需設定 `TDX_CLIENT_ID` 與 `TDX_CLIENT_SECRET` 才能發布；垃圾清運將以單一城市的官方來源逐步導入。

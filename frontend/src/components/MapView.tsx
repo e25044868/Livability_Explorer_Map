@@ -46,6 +46,7 @@ const rescueIcon = L.divIcon({ className: 'facility-marker-wrap rescue', html: '
 const policeIcon = L.divIcon({ className: 'facility-marker-wrap police', html: '<span>警</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const libraryIcon = L.divIcon({ className: 'facility-marker-wrap library', html: '<span>書</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const publicBicycleIcon = L.divIcon({ className: 'facility-marker-wrap public-bicycle', html: '<span>車</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
+const tourismFacilityIcon = L.divIcon({ className: 'facility-marker-wrap tourism-facility', html: '<span>景</span>', iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20] })
 const centerIcon = L.divIcon({ className: 'analysis-center-marker', html: '<span></span>', iconSize: [26, 26], iconAnchor: [13, 13] })
 
 function clusterIcon(count: number) {
@@ -172,6 +173,7 @@ function placeIcon(place: Place, selected: boolean) {
   if (place.category === 'police') return policeIcon
   if (place.category === 'library') return libraryIcon
   if (place.category === 'public_bicycle') return publicBicycleIcon
+  if (place.category === 'tourism_facility') return tourismFacilityIcon
   if ((place.properties.ev_spaces ?? 0) > 0) return evParkingIcon
   return selected ? selectedParkingIcon : parkingIcon
 }

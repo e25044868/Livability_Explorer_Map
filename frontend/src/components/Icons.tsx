@@ -21,6 +21,10 @@ export function ListIcon({ size = 20, className }: IconProps) {
   return <svg {...base(size, className)}><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".7" fill="currentColor"/><circle cx="4" cy="12" r=".7" fill="currentColor"/><circle cx="4" cy="18" r=".7" fill="currentColor"/></svg>
 }
 
+export function MenuIcon({ size = 20, className }: IconProps) {
+  return <svg {...base(size, className)}><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+}
+
 export function LocateIcon({ size = 20, className }: IconProps) {
   return <svg {...base(size, className)}><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8"/></svg>
 }

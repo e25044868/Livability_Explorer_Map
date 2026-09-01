@@ -23,11 +23,11 @@ const labels: Record<string, string> = {
   available_24h: '全天可取用', floor: '設置樓層',
   indoor: '室內', outdoor: '室外', air_conditioning: '冷氣', restroom: '廁所', seats: '座位',
   station_type: '設施類型', capacity: '預計容納人數', disaster_types: '適用災害',
-  vulnerable_friendly: '適合避難弱者', service_villages: '服務村里', agency: '提供機關', venue_type: '場所類型', co_located_with_fire_station: '與消防隊同址', english_name: '英文單位名稱', unit_type: '機關類型',
+  vulnerable_friendly: '適合避難弱者', service_villages: '服務村里', agency: '提供機關', venue_type: '場所類型', co_located_with_fire_station: '與消防隊同址', english_name: '英文單位名稱', unit_type: '機關類型', facility_subtype: '設施子類別', management_office: '管理處', facility_status: '設施狀態', facility_description: '設施說明', landscape_area: '景觀分區',
 }
 
 const englishLabels: Record<string, string> = {
-  facility_type: 'Facility type', fee_description: 'Fee details', car_spaces: 'Car spaces', motorcycle_spaces: 'Motorcycle spaces', large_vehicle_spaces: 'Large-vehicle spaces', operator: 'Operator', contract_period_raw: 'Contract period', toilet_type: 'Restroom type', accessible: 'Accessible', grade: 'Restroom grade', facility_category: 'Facility category', administration: 'Administration', diaper: 'Diaper-changing station', location_description: 'AED location', available_hours: 'Hours', place_category: 'Place category', total_spaces: 'Total spaces', available_spaces: 'Available spaces', operation_time: 'Operating hours', ev_spaces: 'EV spaces', accessible_spaces: 'Accessible spaces', parent_child_spaces: 'Family spaces', height_limit: 'Height limit', monthly_pass: 'Monthly pass', live_updated_at: 'Live update', opening_hours: 'Opening hours', gender_friendly: 'Gender friendly', parent_child: 'Family friendly', available_24h: 'Available 24 hours', floor: 'Floor', indoor: 'Indoor', outdoor: 'Outdoor', air_conditioning: 'Air conditioning', restroom: 'Restroom', seats: 'Seats', station_type: 'Facility type', capacity: 'Capacity', disaster_types: 'Disaster types', vulnerable_friendly: 'Vulnerable-person friendly', service_villages: 'Service villages', agency: 'Providing agency', venue_type: 'Venue type', co_located_with_fire_station: 'Co-located with fire station', english_name: 'English unit name', unit_type: 'Unit type',
+  facility_type: 'Facility type', fee_description: 'Fee details', car_spaces: 'Car spaces', motorcycle_spaces: 'Motorcycle spaces', large_vehicle_spaces: 'Large-vehicle spaces', operator: 'Operator', contract_period_raw: 'Contract period', toilet_type: 'Restroom type', accessible: 'Accessible', grade: 'Restroom grade', facility_category: 'Facility category', administration: 'Administration', diaper: 'Diaper-changing station', location_description: 'AED location', available_hours: 'Hours', place_category: 'Place category', total_spaces: 'Total spaces', available_spaces: 'Available spaces', operation_time: 'Operating hours', ev_spaces: 'EV spaces', accessible_spaces: 'Accessible spaces', parent_child_spaces: 'Family spaces', height_limit: 'Height limit', monthly_pass: 'Monthly pass', live_updated_at: 'Live update', opening_hours: 'Opening hours', gender_friendly: 'Gender friendly', parent_child: 'Family friendly', available_24h: 'Available 24 hours', floor: 'Floor', indoor: 'Indoor', outdoor: 'Outdoor', air_conditioning: 'Air conditioning', restroom: 'Restroom', seats: 'Seats', station_type: 'Facility type', capacity: 'Capacity', disaster_types: 'Disaster types', vulnerable_friendly: 'Vulnerable-person friendly', service_villages: 'Service villages', agency: 'Providing agency', venue_type: 'Venue type', co_located_with_fire_station: 'Co-located with fire station', english_name: 'English unit name', unit_type: 'Unit type', facility_subtype: 'Facility subtype', management_office: 'Management office', facility_status: 'Facility status', facility_description: 'Facility description', landscape_area: 'Landscape area',
 }
 
 export function DetailDrawer({ place, favorite, onClose, onToggleFavorite, dataVersion }: Props) {
@@ -36,7 +36,7 @@ export function DetailDrawer({ place, favorite, onClose, onToggleFavorite, dataV
   return (
     <aside className="detail-drawer" aria-label={interpolate(t('details'), { name: place.name })}>
       <div className="detail-actions">
-        <span className={`detail-category ${place.category}`}>{place.category === 'parking' ? 'P' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : place.category === 'public_wifi' ? 'WiFi' : place.category === 'rescue_unit' ? '119' : place.category === 'police' ? '警' : place.category === 'library' ? '書' : place.category === 'public_bicycle' ? '車' : '安'}</span>
+        <span className={`detail-category ${place.category}`}>{place.category === 'parking' ? 'P' : place.category === 'aed' ? 'AED' : place.category === 'toilet' ? 'WC' : place.category === 'drinking_water' ? '水' : place.category === 'public_wifi' ? 'WiFi' : place.category === 'rescue_unit' ? '119' : place.category === 'police' ? '警' : place.category === 'library' ? '書' : place.category === 'public_bicycle' ? '車' : place.category === 'tourism_facility' ? '景' : '安'}</span>
         <div>
           <button className={`favorite-button ${favorite ? 'active' : ''}`} onClick={onToggleFavorite} aria-label={favorite ? t('removeFavorite') : t('addFavorite')}>{favorite ? '★' : '☆'}</button>
           <button className="drawer-close" onClick={onClose} aria-label={t('closeDetails')}>×</button>
@@ -71,6 +71,7 @@ function sourceLabel(place: Place, t: (key: never) => string) {
   if (place.category === 'police') return t('nationalPolice' as never)
   if (place.category === 'library') return t('nationalLibrary' as never)
   if (place.category === 'public_bicycle') return t('nationalPublicBicycle' as never)
+  if (place.category === 'tourism_facility') return t('nationalTourismFacility' as never)
   return t('governmentData' as never)
 }
 
