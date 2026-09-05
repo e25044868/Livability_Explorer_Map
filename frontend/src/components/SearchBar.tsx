@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { geocodeLandmarks, searchPlaces } from '../api'
 import type { CategoryKey, Place } from '../types'
 import { useI18n } from '../i18n'
@@ -9,6 +9,23 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
   const [results, setResults] = useState<Place[]>([])
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [searchTick, setSearchTick] = useState(0)
+  const searchImmediately = useRef(false)
+  const mapSearchUrl = keyword.trim()
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(keyword.trim())}`
+    : null
+
+  function showResults(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (keyword.trim().length >= 2) {
+      if (mapSearchUrl && looksLikeAddress(keyword)) {
+        window.open(mapSearchUrl, '_blank', 'noopener,noreferrer')
+        return
+      }
+      searchImmediately.current = true
+      setSearchTick((current) => current + 1)
+    }
+  }
 
   useEffect(() => {
     if (keyword.trim().length < 2) {
@@ -16,6 +33,8 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
       return
     }
     const controller = new AbortController()
+    const delay = searchImmediately.current ? 0 : 350
+    searchImmediately.current = false
     const timer = window.setTimeout(async () => {
       setLoading(true)
       try {
@@ -35,20 +54,23 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
       } finally {
         setLoading(false)
       }
-    }, 350)
+    }, delay)
     return () => { window.clearTimeout(timer); controller.abort() }
-  }, [categories, keyword])
+  }, [categories, keyword, searchTick])
 
   return (
-    <div className="search-box">
+    <form className="search-box" onSubmit={showResults}>
       <span aria-hidden="true">⌕</span>
       <input
+        type="search"
         value={keyword}
         onChange={(event) => setKeyword(event.target.value)}
         onFocus={() => results.length && setOpen(true)}
         placeholder={t('searchPlaceholder')}
         aria-label={t('searchPlaceholder')}
+        autoComplete="street-address"
       />
+      <button type="submit" className="search-submit" disabled={keyword.trim().length < 2 || loading}>{t('search')}</button>
       {loading && <span className="search-loading">{t('searchLoading')}</span>}
       {open && keyword.trim().length >= 2 && (
         <div className="search-results">
@@ -57,8 +79,13 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
               <strong>{place.name}</strong><small>{place.address ?? t('addressUnavailable')}</small>
             </button>
           )) : <div className="search-empty">{t('noSearchResults')}</div>}
+          {mapSearchUrl && <a className="search-external-map" href={mapSearchUrl} target="_blank" rel="noreferrer">{t('openInGoogleMaps')}</a>}
         </div>
       )}
-    </div>
+    </form>
   )
+}
+
+function looksLikeAddress(value: string) {
+  return /[縣市區鄉鎮村里路街段巷弄號]/.test(value)
 }
