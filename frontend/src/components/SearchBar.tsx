@@ -11,17 +11,10 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
   const [loading, setLoading] = useState(false)
   const [searchTick, setSearchTick] = useState(0)
   const searchImmediately = useRef(false)
-  const mapSearchUrl = keyword.trim()
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(keyword.trim())}`
-    : null
 
   function showResults(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (keyword.trim().length >= 2) {
-      if (mapSearchUrl && looksLikeAddress(keyword)) {
-        window.open(mapSearchUrl, '_blank', 'noopener,noreferrer')
-        return
-      }
       searchImmediately.current = true
       setSearchTick((current) => current + 1)
     }
@@ -79,13 +72,8 @@ export function SearchBar({ onSelect, categories }: { onSelect: (place: Place) =
               <strong>{place.name}</strong><small>{place.address ?? t('addressUnavailable')}</small>
             </button>
           )) : <div className="search-empty">{t('noSearchResults')}</div>}
-          {mapSearchUrl && <a className="search-external-map" href={mapSearchUrl} target="_blank" rel="noreferrer">{t('openInGoogleMaps')}</a>}
         </div>
       )}
     </form>
   )
-}
-
-function looksLikeAddress(value: string) {
-  return /[縣市區鄉鎮村里路街段巷弄號]/.test(value)
 }
